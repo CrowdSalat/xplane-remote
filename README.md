@@ -8,6 +8,8 @@ Beim Linux Rechner folgende iptables Regel hinzugefügt
 
 ``` shell
 sudo iptables -I INPUT -p udp --dport 49000 -j ACCEPT
+sudo iptables -I INPUT -p udp --dport 50000 -j ACCEPT
+sudo iptables -I INPUT -p udp -j ACCEPT
 ```
 
 ## XPlane Datenschnittstellen Dokumentation
