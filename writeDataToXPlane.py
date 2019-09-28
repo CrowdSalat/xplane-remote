@@ -83,38 +83,56 @@ def set_longi_lati_coordinates(x=50.941357, y=6.958307):
 
 
 def read_datarefs():
-'''
-klappt nicht. Laut GUI klappt das empfangen am server socket, 
-aber der hier geoeffnete client sockte akzeptiert keine Verbindung. Laut Serverlogs scheint der port auch trtz des Binds nicht fix zu sein.
-
-möglichkeiten:
-1. iptables mal alle UDP port incoming oeffnen
-2. Einfach die GUI zum schreiben verwenden und hier vorerst nur schreiben, damit man mal voran kommt.
-'''
-     #activate
-     dref_freq = struct.pack('i', 1)
-     dref_en = struct.pack('i', 1)
-     x_dref = add_filler_bytes(b'sim/flightmodel/position/longitude\0', 400)
-
-     msg = HEADER_RREF + dref_freq  + dref_en + x_dref
-
      sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-     sock.bind(('', 49000))
-     sock.connect((ip, port))
-     input("Press Enter to continue...")
-     sock.sendall(msg)
-     print('send')
+
+     #activate
+     drefs = []
+     drefs.append(b'sim/flightmodel/position/true_airspeed\0') # float	n	meters/sec	Air speed true - this does not take into account air density at altitude!
+     drefs.append(b'sim/flightmodel/position/local_x\0') # double	y	meters	The location of the plane in OpenGL coordinates
+     drefs.append(b'sim/flightmodel/position/local_y\0') # double	y	meters	The location of the plane in OpenGL coordinates
+     drefs.append(b'sim/flightmodel/position/local_z\0') # double	y	meters	The location of the plane in OpenGL coordinates
+
+     dref_freq = struct.pack('i', 1)
+     for i in range(0, len(drefs)):
+          dref_en = struct.pack('i', i)
+          dref_value = add_filler_bytes(drefs[i], 400)
+          msg = HEADER_RREF + dref_freq  + dref_en + dref_value
+          sock.sendto(msg, (ip, port))
+          
+
+
      #read
      print('receive')
-     data, addr = sock.recv(1024)
-     print('received from ' + addr)
-     print('data ' + data)
+     data, addr = sock.recvfrom(1024)
+     print('received from ' + str(addr))
+     print('data ' + str(data))
+     data_lenght = len(data)
+     print('data lenght ' + str(data_lenght))
 
+     HEADER_LEN = 5
+     header = data[0:HEADER_LEN]
+     nr_msgs = len(drefs)
+     msg = data[5: len(data)]
+     data.strip()
+     print('message lenght: ' + str(data_lenght - HEADER_LEN) )
+     for i in range(0,nr_msgs):
+          offset = 4
+          start_index = HEADER_LEN + (offset * 2 * i)   
+          value_index = start_index + offset
+          index = struct.unpack('<i', data[start_index:start_index + offset])[0]
+          value =  struct.unpack('<f', data[value_index:value_index + offset])[0]
+          print(header,index, value)
+     
+     
      # deactivate
-     dref_freq = struct.pack('i', 0) 
-     msg = HEADER_RREF + dref_freq  + dref_en + x_dref
-     sock.send(msg)
+     dref_freq = struct.pack('i', 0)
+     for i in range(0, len(drefs)):
+          dref_en = struct.pack('i', i)
+          dref_value = add_filler_bytes(drefs[i], 400)
+          msg = HEADER_RREF + dref_freq  + dref_en + dref_value
+          sock.sendto(msg, (ip, port))
      sock.close() 
+
 
 
 
