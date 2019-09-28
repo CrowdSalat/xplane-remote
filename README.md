@@ -12,6 +12,10 @@ sudo iptables -I INPUT -p udp --dport 49000 -j ACCEPT
 
 ## XPlane Datenschnittstellen Dokumentation
 
+Das Ziel an das Dataoutput kann über die GUI eingestellt werden. Alternativ auch Programmatisch über Sockets.
+
+Für Dataref kann in der GUI Lesend und Schreibend aktiviert werden. Schreibend heißt, dass UDP Packete an das angebene Ziel gesendet  werden. Kann Alternativ Programmatisch geöffnet werden. Lesend scheint keine Auswirkung zu haben, die Schreibenden Python Skripte funktionieren dennoch.
+
 Xplane unterscheidet zwischen Dataref und Dataoutputs. Beide Wege sind in Dokumenation unter C./xplane/ TODO gespeichert.
 
 DataRef Lesen: 
