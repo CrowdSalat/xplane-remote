@@ -190,7 +190,6 @@ if __name__ == "__main__":
 
      print(dref_dict)
 
-     exit()
      #set_altitude(2001)
 
      #set_longi_lati_coordinates()
