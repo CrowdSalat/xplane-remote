@@ -91,6 +91,9 @@ def read_datarefs():
      drefs.append(b'sim/flightmodel/position/local_x\0') # double	y	meters	The location of the plane in OpenGL coordinates
      drefs.append(b'sim/flightmodel/position/local_y\0') # double	y	meters	The location of the plane in OpenGL coordinates
      drefs.append(b'sim/flightmodel/position/local_z\0') # double	y	meters	The location of the plane in OpenGL coordinates
+     drefs.append(b'sim/time/total_flight_time_sec\0') # float	y	seconds	Total time since the flight got reset by something
+
+
 
      dref_freq = struct.pack('i', 1)
      for i in range(0, len(drefs)):
@@ -121,7 +124,7 @@ def read_datarefs():
           value_index = start_index + offset
           index = struct.unpack('<i', data[start_index:start_index + offset])[0]
           value =  struct.unpack('<f', data[value_index:value_index + offset])[0]
-          print(header,index, value)
+          print(header,index, value, drefs[i])
      
      
      # deactivate
@@ -134,7 +137,9 @@ def read_datarefs():
      sock.close() 
 
 
-
+def setDref(dref_name, dref_value):
+     msgLocalX = HEADER_DREF + struct.pack('f', dref_value)+ add_filler_bytes(dref_name)
+     send_message(msgLocalX)
 
 
 if __name__ == "__main__":
@@ -144,4 +149,26 @@ if __name__ == "__main__":
      #set_altitude(2001)
 
      #set_longi_lati_coordinates()
-     read_datarefs()
+     #read_datarefs()
+
+     setDref(b'sim/cockpit/autopilot/autopilot_mode\0', 2.0)
+     
+     # climb and sink
+     #setDref(b'sim/cockpit/autopilot/altitude\0', 4500.0)
+     #setDref(b'sim/cockpit/autopilot/autopilot_state\0', 16.0) #  VVI Climb Engage Toggle
+     #setDref(b'sim/cockpit/autopilot/vertical_velocity\0', -200.0)
+     
+     #reset time
+     setDref(b'sim/time/total_flight_time_sec\0', 0.0)
+     
+
+     # banks
+     
+     setDref(b'sim/cockpit/autopilot/autopilot_state\0', 2.0) #   Heading Hold Engage 
+     setDref(b'sim/cockpit/autopilot/heading_roll_mode\0', 6.0) # wie starke kurven im hdg mode: 1-6 for 5-30 degree
+     setDref(b'sim/cockpit/autopilot/heading_mag\0', 350.0)  
+     
+
+     # TODO 
+     # impl read mode
+     # socket übergreifend laufen lassen
