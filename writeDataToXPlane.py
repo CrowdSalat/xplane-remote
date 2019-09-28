@@ -54,9 +54,7 @@ def add_filler_bytes(dref_name: bytes, xplane_dref_expected_byte_lenght = 500) -
      return dref_name + ((xplane_dref_expected_byte_lenght - len(dref_name)) * b' ')
 
 def send_message(byte_message):
-     outsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-     outsock.sendto(byte_message, (ip, port))
-     outsock.close()   
+     SOCKET.sendto(byte_message, (ip, port))
 
 def set_altitude(altitude=1000.0):
      '''
@@ -137,36 +135,41 @@ def read_datarefs():
      sock.close() 
 
 
-def setDref(dref_name, dref_value):
+def set_dref(dref_name, dref_value):
      msgLocalX = HEADER_DREF + struct.pack('f', dref_value)+ add_filler_bytes(dref_name)
      send_message(msgLocalX)
 
 
+
+
+SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+dref_names = {}
+
 if __name__ == "__main__":
      #set_position_x()
-     
+     read_dref(b'sim/flightmodel/position/true_airspeed\0')
 
      #set_altitude(2001)
 
      #set_longi_lati_coordinates()
      #read_datarefs()
 
-     setDref(b'sim/cockpit/autopilot/autopilot_mode\0', 2.0)
+     set_dref(b'sim/cockpit/autopilot/autopilot_mode\0', 2.0)
      
      # climb and sink
-     #setDref(b'sim/cockpit/autopilot/altitude\0', 4500.0)
-     #setDref(b'sim/cockpit/autopilot/autopilot_state\0', 16.0) #  VVI Climb Engage Toggle
-     #setDref(b'sim/cockpit/autopilot/vertical_velocity\0', -200.0)
+     #set_dref(b'sim/cockpit/autopilot/altitude\0', 4500.0)
+     #set_dref(b'sim/cockpit/autopilot/autopilot_state\0', 16.0) #  VVI Climb Engage Toggle # http://www.xsquawkbox.net/xpsdk/mediawiki/Sim/cockpit/autopilot/autopilot_state
+     #set_dref(b'sim/cockpit/autopilot/vertical_velocity\0', -200.0)
      
      #reset time
-     setDref(b'sim/time/total_flight_time_sec\0', 0.0)
+     set_dref(b'sim/time/total_flight_time_sec\0', 0.0)
      
 
      # banks
      
-     setDref(b'sim/cockpit/autopilot/autopilot_state\0', 2.0) #   Heading Hold Engage 
-     setDref(b'sim/cockpit/autopilot/heading_roll_mode\0', 6.0) # wie starke kurven im hdg mode: 1-6 for 5-30 degree
-     setDref(b'sim/cockpit/autopilot/heading_mag\0', 350.0)  
+     #set_dref(b'sim/cockpit/autopilot/autopilot_state\0', 2.0) #   Heading Hold Engage 
+     #set_dref(b'sim/cockpit/autopilot/heading_roll_mode\0', 6.0) # wie starke kurven im hdg mode: 1-6 for 5-30 degree
+     #set_dref(b'sim/cockpit/autopilot/heading_mag\0', 350.0)  
      
 
      # TODO 
