@@ -34,7 +34,9 @@ port = 49000
 HEADER_DREF = b"DREF\0"
 HEADER_RREF = b"RREF\0"
 
-
+SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+dref_dict = {}
+dref_list= []
 
 def set_position_x():
      '''
@@ -140,15 +142,55 @@ def set_dref(dref_name, dref_value):
      send_message(msgLocalX)
 
 
+def get_dreaf(dref_name):
+     if dref_name not in dref_dict:
+          send_rref(dref_name)
+     read_rref()
+     return dref_dict.get(dref_name)
+
+def send_rref(dref_name):
+     new_index = len(dref_list) # index for the additional field
+     dref_freq = struct.pack('i', 1)
+     dref_en = struct.pack('i', new_index)
+     dref_value = add_filler_bytes(dref_name, 400)
+     msg = HEADER_RREF + dref_freq  + dref_en + dref_value
+     SOCKET.sendto(msg, (ip, port))
+     dref_list.append(dref_name) # add the new field to the list of read drefs
 
 
-SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-dref_names = {}
+def read_rref():
+     data, addr = SOCKET.recvfrom(1024)
+     
+     DATA_LEN = len(data)
+     
+     HEADER_LEN = 5
+     MESSAGE_OFFSET = 8
+     MESSAGE_LEN = DATA_LEN - HEADER_LEN
+     FIELD_LEN = int(MESSAGE_OFFSET/2)
+     print('data lenght ' + str(DATA_LEN))
+     print('message lenght: ' + str(MESSAGE_LEN) )
+     print('message is multiple of ME_OFFSET: ' + str(MESSAGE_LEN % MESSAGE_OFFSET == 0) )
+     MESSAGES_NR = int(MESSAGE_LEN / MESSAGE_OFFSET)
+
+     header = data[0:HEADER_LEN]
+     for i in range(0,MESSAGES_NR):
+          offset_index = HEADER_LEN + (MESSAGE_OFFSET * i)   
+          offset_value = offset_index + FIELD_LEN
+          index = struct.unpack('<i', data[offset_index:offset_index + FIELD_LEN])[0]
+          value =  struct.unpack('<f', data[offset_value:offset_value + FIELD_LEN])[0]
+          
+          print(header,index, value, dref_list[index])
+          dref_dict[dref_list[index]] = value
+
 
 if __name__ == "__main__":
      #set_position_x()
-     read_dref(b'sim/flightmodel/position/true_airspeed\0')
+     print(get_dreaf(b'sim/flightmodel/position/true_airspeed\0'))
+     print(get_dreaf(b'sim/time/total_flight_time_sec\0'))
 
+     print(dref_dict)
+
+     exit()
      #set_altitude(2001)
 
      #set_longi_lati_coordinates()
@@ -170,8 +212,4 @@ if __name__ == "__main__":
      #set_dref(b'sim/cockpit/autopilot/autopilot_state\0', 2.0) #   Heading Hold Engage 
      #set_dref(b'sim/cockpit/autopilot/heading_roll_mode\0', 6.0) # wie starke kurven im hdg mode: 1-6 for 5-30 degree
      #set_dref(b'sim/cockpit/autopilot/heading_mag\0', 350.0)  
-     
 
-     # TODO 
-     # impl read mode
-     # socket übergreifend laufen lassen
