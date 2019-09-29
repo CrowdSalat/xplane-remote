@@ -28,6 +28,25 @@ import struct
 import sys
 import time
 
+DREF_OVERRIDE = b"sim/operation/override/override_planepath\0"
+DREF_X = b'sim/flightmodel/position/local_x\0'                        # double	y	meters	The location of the plane in OpenGL coordinates                             
+DREF_Y = b'sim/flightmodel/position/local_y\0'                        # double	y	meters	The location of the plane in OpenGL coordinates         
+DREF_Z = b'sim/flightmodel/position/local_z\0'                        # double	y	meters	The location of the plane in OpenGL coordinates
+DREF_MISSN_TIME = b'sim/time/total_flight_time_sec\0'                 # float	y	seconds	Total time since the flight got reset by something
+
+DREF_AP_ACTIVATE = b'sim/cockpit/autopilot/autopilot_mode\0' # 2.0 is on
+DREF_AP_SET_ALTI_IN_FTMSL = b'sim/cockpit/autopilot/altitude\0' #float	y	ftmsl	Altitude dialed into the AP
+DREF_AP_SET_VV_IN_FPM = b'sim/cockpit/autopilot/vertical_velocity\0'
+DREF_AP_HEADING_LEVEL = b'sim/cockpit/autopilot/heading_roll_mode\0' # Bank limit - 0 = auto, 1-6 = 5-30 degrees of bank
+DREF_AP_HEADING_IN_DEGREE = b'sim/cockpit/autopilot/heading_mag\0' # 	float	y	degm	The heading to fly (magnetic, preferred) pilot
+    
+# Toggles AP MODE Buttons
+# http://www.xsquawkbox.net/xpsdk/mediawiki/Sim/cockpit/autopilot/autopilot_state
+# 16  VVI Climb Engage Toggle 
+# 2   Heading Hold Engage
+DREF_AP_STATE_TOGGLE_FLAG = b'sim/cockpit/autopilot/autopilot_state\0'
+
+
 ip = "192.168.23.192"
 port = 49000
 HEADER_DREF = b"DREF\0"
@@ -44,12 +63,12 @@ def set_position_x():
      nutzt offset. Jedoch gibt es scheinbar immer feste Grenzen an denen der longitude Wert hängen bleibt.
      '''
      value_override = 1
-     dref_override = add_filler_bytes(b"sim/operation/override/override_planepath\0")
+     dref_override = add_filler_bytes(DREF_OVERRIDE)
      msgLocalX = HEADER_DREF + struct.pack('f', value_override) + dref_override
      send_message(msgLocalX)
 
      value_x_offset = -100
-     stringLocalX = add_filler_bytes(b"sim/flightmodel/position/local_x\0")
+     stringLocalX = add_filler_bytes(DREF_X)
      msgLocalX = HEADER_DREF + struct.pack('f', value_x_offset)+ stringLocalX
      send_message(msgLocalX)
 
@@ -149,26 +168,26 @@ def config_logger():
 if __name__ == "__main__":
      config_logger()
 
-     get_dreaf(b'sim/flightmodel/position/local_x\0') # double	y	meters	The location of the plane in OpenGL coordinates
-     get_dreaf(b'sim/flightmodel/position/local_y\0') # double	y	meters	The location of the plane in OpenGL coordinates
-     get_dreaf(b'sim/flightmodel/position/local_z\0') # double	y	meters	The location of the plane in OpenGL coordinates
-     get_dreaf(b'sim/time/total_flight_time_sec\0') # float	y	seconds	Total time since the flight got reset by something
+     get_dreaf(DREF_X) 
+     get_dreaf(DREF_Y) 
+     get_dreaf(DREF_Z) 
+     get_dreaf(DREF_MISSN_TIME)
      
      logger.info(get_dreafs())
      
-     set_dref(b'sim/cockpit/autopilot/autopilot_mode\0', 2.0)
-     
+     set_dref(DREF_AP_ACTIVATE, 2.0)
+
      # climb and sink
-     #set_dref(b'sim/cockpit/autopilot/altitude\0', 4500.0)
-     #set_dref(b'sim/cockpit/autopilot/autopilot_state\0', 16.0) #  VVI Climb Engage Toggle # http://www.xsquawkbox.net/xpsdk/mediawiki/Sim/cockpit/autopilot/autopilot_state
-     #set_dref(b'sim/cockpit/autopilot/vertical_velocity\0', -200.0)
+     set_dref(DREF_AP_SET_ALTI_IN_FTMSL, 4500.0)
+     set_dref(DREF_AP_STATE_TOGGLE_FLAG, 16.0) 
+     set_dref(DREF_AP_SET_VV_IN_FPM, -200.0)
      
+     input('click')
      #reset time
-     set_dref(b'sim/time/total_flight_time_sec\0', 0.0)
+     set_dref(DREF_MISSN_TIME, 0.0)
      
 
      # banks
-     
-     #set_dref(b'sim/cockpit/autopilot/autopilot_state\0', 2.0) #   Heading Hold Engage 
-     #set_dref(b'sim/cockpit/autopilot/heading_roll_mode\0', 6.0) # wie starke kurven im hdg mode: 1-6 for 5-30 degree
-     #set_dref(b'sim/cockpit/autopilot/heading_mag\0', 350.0)  
+     set_dref(DREF_AP_STATE_TOGGLE_FLAG, 2.0) #   Heading Hold Engage 
+     set_dref(DREF_AP_HEADING_LEVEL, 6.0) # wie starke kurven im hdg mode: 1-6 for 5-30 degree
+     set_dref(DREF_AP_HEADING_IN_DEGREE, 350.0)  
