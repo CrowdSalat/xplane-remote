@@ -21,14 +21,12 @@ Erkenntnis:
 set_longi_lati_coordinates tut nichts, die Anzeigen im Cockpit spinnen aber danach
 
 """
-import sys, os
-import socket
-import time
-import struct
-import math
-import numpy as np
-import array as arr
 import logging
+import os
+import socket
+import struct
+import sys
+import time
 
 ip = "192.168.23.192"
 port = 49000
@@ -119,9 +117,8 @@ def read_rref():
      MESSAGE_OFFSET = 8
      MESSAGE_LEN = DATA_LEN - HEADER_LEN
      FIELD_LEN = int(MESSAGE_OFFSET/2)
-     logger.info('data lenght ' + str(DATA_LEN))
-     logger.info('message lenght: ' + str(MESSAGE_LEN) )
-     logger.info('message is multiple of ME_OFFSET: ' + str(MESSAGE_LEN % MESSAGE_OFFSET == 0) )
+     if MESSAGE_LEN % MESSAGE_OFFSET != 0:
+          logger.error('message lenght {} is not multiple of offset lenght {}. Therefor the decoding of the structs probably went wrong.'.format(MESSAGE_LEN,MESSAGE_OFFSET))
      MESSAGES_NR = int(MESSAGE_LEN / MESSAGE_OFFSET)
 
      header = data[0:HEADER_LEN]
@@ -158,7 +155,7 @@ if __name__ == "__main__":
      get_dreaf(b'sim/time/total_flight_time_sec\0') # float	y	seconds	Total time since the flight got reset by something
      
      logger.info(get_dreafs())
-     exit()
+     
      set_dref(b'sim/cockpit/autopilot/autopilot_mode\0', 2.0)
      
      # climb and sink
@@ -175,4 +172,3 @@ if __name__ == "__main__":
      #set_dref(b'sim/cockpit/autopilot/autopilot_state\0', 2.0) #   Heading Hold Engage 
      #set_dref(b'sim/cockpit/autopilot/heading_roll_mode\0', 6.0) # wie starke kurven im hdg mode: 1-6 for 5-30 degree
      #set_dref(b'sim/cockpit/autopilot/heading_mag\0', 350.0)  
-
