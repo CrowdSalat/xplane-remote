@@ -168,6 +168,16 @@ def config_logger():
 
      logger.addHandler(ch)
 
+#TODO is untested
+def end_rref():
+     for dref_name in dref_list:
+          send_rref(dref_name,freq=0)
+
+#TODO is untested
+def close_connections():
+     #TODO shutdown?
+     SOCKET.close()
+
 
 if __name__ == "__main__":
      config_logger()
@@ -194,4 +204,9 @@ if __name__ == "__main__":
      # banks
      set_dref(DREF_AP_STATE_TOGGLE_FLAG, 2.0) #   Heading Hold Engage 
      set_dref(DREF_AP_HEADING_LEVEL, 6.0) # wie starke kurven im hdg mode: 1-6 for 5-30 degree
-     set_dref(DREF_AP_HEADING_IN_DEGREE, 350.0)  
+     set_dref(DREF_AP_HEADING_IN_DEGREE, 350.0)
+
+     end_rref()
+     close_connections() 
+
+
