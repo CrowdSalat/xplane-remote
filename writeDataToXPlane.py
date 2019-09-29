@@ -28,17 +28,20 @@ import struct
 import sys
 import time
 
+logger = logging.getLogger('xplane_remote')
+
+# DREF API Names 
 DREF_OVERRIDE = b"sim/operation/override/override_planepath\0"
 DREF_X = b'sim/flightmodel/position/local_x\0'                        # double	y	meters	The location of the plane in OpenGL coordinates                             
 DREF_Y = b'sim/flightmodel/position/local_y\0'                        # double	y	meters	The location of the plane in OpenGL coordinates         
 DREF_Z = b'sim/flightmodel/position/local_z\0'                        # double	y	meters	The location of the plane in OpenGL coordinates
 DREF_MISSN_TIME = b'sim/time/total_flight_time_sec\0'                 # float	y	seconds	Total time since the flight got reset by something
 
-DREF_AP_ACTIVATE = b'sim/cockpit/autopilot/autopilot_mode\0' # 2.0 is on
-DREF_AP_SET_ALTI_IN_FTMSL = b'sim/cockpit/autopilot/altitude\0' #float	y	ftmsl	Altitude dialed into the AP
+DREF_AP_ACTIVATE = b'sim/cockpit/autopilot/autopilot_mode\0'          # 2.0 is on
+DREF_AP_SET_ALTI_IN_FTMSL = b'sim/cockpit/autopilot/altitude\0'       #float	y	ftmsl	Altitude dialed into the AP
 DREF_AP_SET_VV_IN_FPM = b'sim/cockpit/autopilot/vertical_velocity\0'
-DREF_AP_HEADING_LEVEL = b'sim/cockpit/autopilot/heading_roll_mode\0' # Bank limit - 0 = auto, 1-6 = 5-30 degrees of bank
-DREF_AP_HEADING_IN_DEGREE = b'sim/cockpit/autopilot/heading_mag\0' # 	float	y	degm	The heading to fly (magnetic, preferred) pilot
+DREF_AP_HEADING_LEVEL = b'sim/cockpit/autopilot/heading_roll_mode\0'  # Bank limit - 0 = auto, 1-6 = 5-30 degrees of bank
+DREF_AP_HEADING_IN_DEGREE = b'sim/cockpit/autopilot/heading_mag\0'    # 	float	y	degm	The heading to fly (magnetic, preferred) pilot
     
 # Toggles AP MODE Buttons
 # http://www.xsquawkbox.net/xpsdk/mediawiki/Sim/cockpit/autopilot/autopilot_state
@@ -46,15 +49,16 @@ DREF_AP_HEADING_IN_DEGREE = b'sim/cockpit/autopilot/heading_mag\0' # 	float	y	de
 # 2   Heading Hold Engage
 DREF_AP_STATE_TOGGLE_FLAG = b'sim/cockpit/autopilot/autopilot_state\0'
 
-
-IP = "192.168.23.192"
-PORT = 49000
 HEADER_DREF = b"DREF\0"
 HEADER_RREF = b"RREF\0"
 
-logger = logging.getLogger('xplane_remote')
-
+# Connection
+IP = "192.168.23.192"
+PORT = 49000
 SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+
+# save state of requested rref fields
 dref_dict = {}
 dref_list= []
 
