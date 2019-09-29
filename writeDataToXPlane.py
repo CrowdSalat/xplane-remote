@@ -47,8 +47,8 @@ DREF_AP_HEADING_IN_DEGREE = b'sim/cockpit/autopilot/heading_mag\0' # 	float	y	de
 DREF_AP_STATE_TOGGLE_FLAG = b'sim/cockpit/autopilot/autopilot_state\0'
 
 
-ip = "192.168.23.192"
-port = 49000
+IP = "192.168.23.192"
+PORT = 49000
 HEADER_DREF = b"DREF\0"
 HEADER_RREF = b"RREF\0"
 
@@ -76,7 +76,7 @@ def add_filler_bytes(dref_name: bytes, xplane_dref_expected_byte_lenght = 500) -
      return dref_name + ((xplane_dref_expected_byte_lenght - len(dref_name)) * b' ')
 
 def send_message(byte_message):
-     SOCKET.sendto(byte_message, (ip, port))
+     SOCKET.sendto(byte_message, (IP, PORT))
 
 def set_altitude(altitude=1000.0):
      '''
@@ -123,7 +123,7 @@ def send_rref(dref_name, freq=1):
      dref_en = struct.pack('i', new_index)
      dref_value = add_filler_bytes(dref_name, 400)
      msg = HEADER_RREF + dref_freq  + dref_en + dref_value
-     SOCKET.sendto(msg, (ip, port))
+     SOCKET.sendto(msg, (IP, PORT))
      dref_list.append(dref_name) # add the new field to the list of read drefs
 
 
