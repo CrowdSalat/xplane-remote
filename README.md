@@ -2,14 +2,19 @@
 
 ## Firewall config
 
-In Windows Rechner in erweiterten Firewall Einstellungen die vorgefertigten Xplane Regeln gelöschtund eine iegene Hinugefügrt, die Incoming Traffic auf Port 49000 von jeden Rechner erlaubt.  
+In Windows Rechner in erweiterten Firewall Einstellungen die vorgefertigten Xplane Regeln gelöschtund eine iegene Hinugefügrt, die Incoming Traffic auf Port 49000 von jeden Rechner erlaubt.
+Die anderen Port eigentlich nicht geöffnet, klappt dennoch..
 
-Beim Linux Rechner folgende iptables Regel hinzugefügt
+Beim Linux Rechner alle eingehenden UDP Ports geöffnet, da in der Bibliothek pyxpudpserver mehrere Sockets auf verschiedenen Ports geöffnet werden.
 
 ``` shell
-sudo iptables -I INPUT -p udp --dport 49000 -j ACCEPT
-sudo iptables -I INPUT -p udp --dport 50000 -j ACCEPT
 sudo iptables -I INPUT -p udp -j ACCEPT
+```
+
+## Bibliotheken
+https://github.com/leleopard/pyXPUDPServer
+```
+pip3 install pyxpudpserver
 ```
 
 ## XPlane Datenschnittstellen Dokumentation
