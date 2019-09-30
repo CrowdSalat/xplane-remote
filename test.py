@@ -18,6 +18,10 @@ class Test_Xplane_Remote(unittest.TestCase):
     def tearDownClass(clss):
         pass
 
+    def test_reset_mission_time(self):
+        xpr.rst_msn_time()
+        msn_time = xpr.get_dref(xpr.DREF_MISSN_TIME)
+        self.assertTrue(msn_time < 2.0)
 
     def test_get_current_altitude(self):
         alti = xpr.get_current_altitude()

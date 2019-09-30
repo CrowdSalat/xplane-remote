@@ -65,51 +65,13 @@ def config_logger():
      logger.addHandler(ch)
      logger.addHandler(fh)
 
+def xp_config_enviroment():
+     '''
+     config weather etc.
+     '''
+     print('-------TODO---------')
 
-
-def set_planned_climbrate(fpm: float):
-     set_dref(DREF_AP_SET_VV_IN_FPM2,fpm)
-
-
-
-def fly_banks():
-     #set_dref(DREF_AP_STATE_TOGGLE_FLAG, 2.0) #   Heading Hold Engage 
-     #set_dref(DREF_AP_SET_HEADING_LEVEL, 6.0) # wie starke kurven im hdg mode: 1-6 for 5-30 degree
-     #set_dref(DREF_AP_SET_HEADING_IN_DEGREE, 350.0)
-     pass
-
-def rst_msn_time():
-     #set_dref(DREF_MISSN_TIME, 0.0)
-     pass
-
-def fly_parable():
-     #set_dref(DREF_AP_ACTIVATE, 2.0)
-
-     start_alt = 1500.0
-     altitude = 200.0
-     fpm = 200.0
-
-     climb_to(start_alt, fpm)
-     wait_until_altitude_reached(altitude, reset_time=True)
-
-     climb(altitude, fpm)
-     wait_until_altitude_reached(altitude)
-     rst_msn_time()
-
-     climb(-altitude, -fpm)
-
-def climb_to(altitude_target:float, fpm:float):
-     cur_alti = get_current_altitude()
-     delta = altitude_target - cur_alti
-
-     fpm = abs(fpm)
-     if delta < 0:
-          fpm *= -1
-
-     set_planned_altitude(altitude_target)
-     activate_mode_vs()
-     set_planned_climbrate(fpm)
-
+### MODES
 def activate_mode_vs(activate=True):
      activate_mode(16.0, 5, activate)
 
@@ -127,20 +89,23 @@ def activate_mode(mode:float, bit_pos:int ,activate=True):
           pass # desired state is already reached
 
 
-def climb(altitude_delta:float, fpm:float):
-     current_altitude = get_current_altitude()
-     altitude_target = current_altitude + altitude_delta
-     climb_to(altitude_target, fpm)
-          
-def get_current_altitude():
-     return get_dref(DREF_INDICATOR_ALTI)
+### VALUES GET/ SET 
+def rst_msn_time():
+     set_dref(DREF_MISSN_TIME, 0.0)
+
+def set_planned_climbrate(fpm: float):
+     set_dref(DREF_AP_SET_VV_IN_FPM2,fpm)
 
 def set_planned_altitude(target_altitude: float):
      set_dref(DREF_AP_SET_ALTI_IN_FEET,target_altitude)
 
+def get_current_altitude():
+     return get_dref(DREF_INDICATOR_ALTI)
+
+
+### DREF SET/GET
 def set_dref(dref_name, target_value, index= 0):
      XPUDP.pyXPUDPServer.sendXPDref(dref_name,index,target_value)
-
 
 def get_dref(dref_name: str):
      dref = XPUDP.pyXPUDPServer.getData(dref_name)
@@ -149,6 +114,48 @@ def get_dref(dref_name: str):
           dref = XPUDP.pyXPUDPServer.getData(dref_name)
      return dref
 
+### MANEUVER
+
+def climb_to(altitude_target:float, fpm:float, wait_until_reached:bool = False):
+     cur_alti = get_current_altitude()
+     delta = altitude_target - cur_alti
+
+     fpm = abs(fpm)
+     if delta < 0:
+          fpm *= -1
+
+     set_planned_altitude(altitude_target)
+     activate_mode_vs()
+     set_planned_climbrate(fpm)
+
+def climb(altitude_delta:float, fpm:float):
+     current_altitude = get_current_altitude()
+     altitude_target = current_altitude + altitude_delta
+     climb_to(altitude_target, fpm)
+
+
+def fly_parable():
+     #set_dref(DREF_AP_ACTIVATE, 2.0)
+
+     start_alt = 1500.0
+     altitude = 200.0
+     fpm = 200.0
+
+     climb_to(start_alt, fpm)
+     wait_until_altitude_reached(altitude, reset_time=True)
+
+     climb(altitude, fpm)
+     wait_until_altitude_reached(altitude)
+     rst_msn_time()
+
+     climb(-altitude, -fpm)
+
+
+def fly_banks():
+     #set_dref(DREF_AP_STATE_TOGGLE_FLAG, 2.0) #   Heading Hold Engage 
+     #set_dref(DREF_AP_SET_HEADING_LEVEL, 6.0) # wie starke kurven im hdg mode: 1-6 for 5-30 degree
+     #set_dref(DREF_AP_SET_HEADING_IN_DEGREE, 350.0)
+     pass
 
 def wait_until_altitude_reached(expected_altitude, reset_time=False):
      '''
@@ -166,12 +173,8 @@ def wait_until_altitude_reached(expected_altitude, reset_time=False):
      pass
 
 
+### TRAIN FLIGHTS
 
-def xp_config_enviroment():
-     '''
-     config weather etc.
-     '''
-     print('-------TODO---------')
 
 
 def main():
