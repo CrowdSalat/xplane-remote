@@ -124,7 +124,44 @@ def get_dref(dref_name: str):
           dref = XPUDP.pyXPUDPServer.getData(dref_name)
      return dref
 
+
+### CHECK STATE
+
+def wait_until_x_reached(function_to_load_actual_value, expected_value,tolerance,reset_time):
+     function_to_load_actual_value()     
+     value_not_reached = True
+     while value_not_reached:
+          current_value = function_to_load_actual_value()
+          delta_value = expected_value - current_value
+          if abs(delta_value) < tolerance:
+               value_not_reached = False 
+          if reset_time:
+               rst_msn_time()
+          time.sleep(1)
+
+def wait_until_heading_reached(expected_heading, reset_time=False):
+     wait_until_x_reached(get_current_heading, expected_heading, 2.0, reset_time)
+     
+
+def wait_until_altitude_reached(expected_altitude, reset_time=False):
+     wait_until_x_reached(get_current_altitude, expected_altitude, 50.0,reset_time)
+
 ### MANEUVER
+
+
+def set_bank_angle(level: int = 0):
+     # 0=auto 1-6 for 5-30 bank degree in hdg mode
+     set_dref(DREF_AP_SET_HEADING_LEVEL, 6.0) 
+
+def set_heading_delta(delta: float):
+     current_heading = get_current_heading()
+     target_heading = (current_heading + delta) % 360.0
+     set_heading(target_heading)
+     return target_heading
+
+def set_heading(heading: float):
+     set_dref(DREF_AP_SET_HEADING_IN_DEGREE, heading)
+
 
 def climb_to(altitude_target:float, fpm:float):
      cur_alti = get_current_altitude()
@@ -161,42 +198,14 @@ def fly_parable():
      wait_until_altitude_reached(target_altitude)
      rst_msn_time()
 
-def set_bank_angle(level: int = 0):
-     # 0=auto 1-6 for 5-30 bank degree in hdg mode
-     set_dref(DREF_AP_SET_HEADING_LEVEL, 6.0) 
-
-def set_heading_delta(delta: float):
-     current_heading = get_current_heading()
-     target_heading = (current_heading + delta) % 360.0
-     set_heading(target_heading)
-
-def set_heading(heading: float):
-     set_dref(DREF_AP_SET_HEADING_IN_DEGREE, heading)
-
 def fly_banks():
      activate_mode_heading()
-     set_bank_angle()
-     set_heading_delta(15.0)
-
-def wait_until_altitude_reached(expected_altitude, reset_time=False):
-     '''
-     Checks if altitude is reached. If not waits 5 seconds and check again.
-     '''
-     altitude_not_reached = True
-     while altitude_not_reached:
-          current_altitude = get_current_altitude()
-          altitude_delta = expected_altitude - current_altitude
-          if abs(altitude_delta) < 50.0:
-               altitude_not_reached = False 
-          if reset_time:
-               rst_msn_time()
-          time.sleep(5)
+     set_bank_angle(6)
+     target_heading = set_heading_delta(15.0)
+     wait_until_heading_reached(target_heading)
 
 
 ### TRAIN FLIGHTS
-
-
-
 def main():
      config_logger()
      init_xp_remote()
@@ -205,13 +214,13 @@ def main():
 
      #TODO reset fuel
      # climb and sink
-     #fly_parable()
+     fly_parable()
      
      #reset time
      rst_msn_time()          
 
      # banks
-     #fly_banks()
+     fly_banks()
 
 
 #TODO server beim beenden des skripte runterfahren
