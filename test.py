@@ -51,6 +51,7 @@ class Test_Xplane_Remote(unittest.TestCase):
     def test_fly_parable(self):
         xpr.fly_parable()
 
+    # direction
     def test_get_heading(self):
         degree = xpr.get_current_heading() 
 
@@ -59,6 +60,9 @@ class Test_Xplane_Remote(unittest.TestCase):
 
     def test_set_heading(self):
         xpr.set_heading(0.0)
+
+    def test_fly_banks(self):
+        xpr.fly_banks()
 
     #not an actual test, just here for convenience
     def test_ask_dref_values(self):
