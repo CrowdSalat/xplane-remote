@@ -25,8 +25,10 @@ class Test_Xplane_Remote(unittest.TestCase):
 
     def test_climb_to(self):
         xpr.climb_to(2000, 500)
+
+    def test_climb(self):
+        xpr.climb(200,200)
     
-    #DELETE
     def test_set_current_altitude(self):
         expeted_planned_alti = 2000.0
         xpr.set_planned_altitude(expeted_planned_alti)
@@ -34,10 +36,10 @@ class Test_Xplane_Remote(unittest.TestCase):
         actual_planned_alti = xpr.get_dref(xpr.DREF_AP_SET_ALTI_IN_FEET)
         self.assertEquals(expeted_planned_alti, actual_planned_alti)
     
-    #DELETE
     def test_activate_modes(self):
         xpr.activate_mode_vs(True)
-    #DELETE
+        xpr.activate_mode_vs(True)
+    
     def test_set_planned_climbrate(self):
         xpr.set_planned_climbrate(200.0)
         xpr.set_planned_climbrate(0.0)

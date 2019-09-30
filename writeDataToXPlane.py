@@ -98,21 +98,7 @@ def fly_parable():
 
      climb(-altitude, -fpm)
 
-
-# 0 values?
-
 def climb_to(altitude_target:float, fpm:float):
-     #logger.info('climb to {} with speed {}'.format(altitude_target, fpm))
-     #current_altitude = get_dreaf(DREF_INDICATOR_ALTI) # TODO  called twice if called by climb function
-     #altitude_delta = altitude_target - current_altitude 
-     #if ((altitude_delta < 0) != (fpm < 0)): # both negativ or positiv 
-     #     logger.warn('incosistent use of climb method. Altitude_delta {}, fpm{}'.format(altitude_delta, fpm))
-     #     return None
-#
-     #set_dref(DREF_AP_SET_ALTI_IN_FTMSL, altitude_target)
-     ## TODO is toggle? than create an activate function
-     #set_dref(DREF_AP_STATE_TOGGLE_FLAG, 16.0) # VVI Climb Engage Toggle 
-     #set_dref(DREF_AP_SET_VV_IN_FPM, fpm)
      cur_alti = get_current_altitude()
      delta = altitude_target - cur_alti
 
@@ -142,15 +128,10 @@ def activate_mode(mode:float, bit_pos:int ,activate=True):
 
 
 def climb(altitude_delta:float, fpm:float):
-     #logger.info('climb {} with speed {}'.format(altitude_delta, fpm))
-     #current_altitude = get_dreaf(DREF_INDICATOR_ALTI)
-     #altitude_target = current_altitude + altitude_delta
-     #climb_to(altitude_target, fpm)
-     
-     altitude = get_current_altitude()
-
-     pass
-     
+     current_altitude = get_current_altitude()
+     altitude_target = current_altitude + altitude_delta
+     climb_to(altitude_target, fpm)
+          
 def get_current_altitude():
      return get_dref(DREF_INDICATOR_ALTI)
 
