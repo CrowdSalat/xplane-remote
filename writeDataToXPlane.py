@@ -209,10 +209,14 @@ def fly_banks():
 def main():
      config_logger()
      init_xp_remote()
-
+     #TODO turn off wind
      xp_config_enviroment()
 
      #TODO reset fuel
+
+     #TODO log maneuvers
+     #TODO find a DREF which can save the name or the number of the maneuver or null if no maneurver
+     #TODO design flights with much dynamic
      # climb and sink
      fly_parable()
      
