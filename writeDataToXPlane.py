@@ -116,7 +116,7 @@ def get_dref(dref_name: str):
 
 ### MANEUVER
 
-def climb_to(altitude_target:float, fpm:float, wait_until_reached:bool = False):
+def climb_to(altitude_target:float, fpm:float):
      cur_alti = get_current_altitude()
      delta = altitude_target - cur_alti
 
@@ -159,18 +159,17 @@ def fly_banks():
 
 def wait_until_altitude_reached(expected_altitude, reset_time=False):
      '''
-     Checks if altitude is reached. If not waits 0.5 seconds and check again.
+     Checks if altitude is reached. If not waits 5 seconds and check again.
      '''
-     #altitude_not_reached = True
-     #while altitude_not_reached:
-     #     current_altitude = get_dreaf(DREF_INDICATOR_ALTI)
-     #     altitude_delta = expected_altitude - current_altitude
-     #     if abs(altitude_delta) < 50.0:
-     #          altitude_not_reached = False 
-     #     if reset_time:
-     #          rst_msn_time()
-     #     time.sleep(0.5)
-     pass
+     altitude_not_reached = True
+     while altitude_not_reached:
+          current_altitude = get_current_altitude()
+          altitude_delta = expected_altitude - current_altitude
+          if abs(altitude_delta) < 50.0:
+               altitude_not_reached = False 
+          if reset_time:
+               rst_msn_time()
+          time.sleep(5)
 
 
 ### TRAIN FLIGHTS
