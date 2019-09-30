@@ -142,21 +142,24 @@ def climb(altitude_delta:float, fpm:float):
      current_altitude = get_current_altitude()
      altitude_target = current_altitude + altitude_delta
      climb_to(altitude_target, fpm)
+     return altitude_target
 
 
 def fly_parable():
-     start_alt = 1500.0
-     altitude = 200.0
+     start_alt = 1000.0
+     altitude_delta = 200.0
      fpm = 500.0
 
      climb_to(start_alt, fpm)
-     wait_until_altitude_reached(altitude, reset_time=True)
+     wait_until_altitude_reached(start_alt, reset_time=True)
 
-     climb(altitude, fpm)
-     wait_until_altitude_reached(altitude)
+     target_altitude = climb(altitude_delta, fpm)
+     wait_until_altitude_reached(target_altitude)
      rst_msn_time()
 
-     climb(-altitude, -fpm)
+     climb(-altitude_delta, -fpm)
+     wait_until_altitude_reached(target_altitude)
+     rst_msn_time()
 
 def set_bank_angle(level: int = 0):
      # 0=auto 1-6 for 5-30 bank degree in hdg mode
