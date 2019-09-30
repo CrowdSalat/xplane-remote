@@ -72,8 +72,15 @@ def xp_config_enviroment():
      print('-------TODO---------')
 
 ### MODES
+def activate_mode_ap():
+     set_dref(DREF_AP_ACTIVATE, 2.0)
+
+
 def activate_mode_vs(activate=True):
      activate_mode(16.0, 5, activate)
+
+def activate_mode_heading(activate=True):
+     activate_mode(2.0, 2, activate)
 
 def activate_mode(mode:float, bit_pos:int ,activate=True):
 
@@ -101,6 +108,9 @@ def set_planned_altitude(target_altitude: float):
 
 def get_current_altitude():
      return get_dref(DREF_INDICATOR_ALTI)
+
+def get_current_heading():
+     return get_dref(DREF_INDICATOR_HEADING)
 
 
 ### DREF SET/GET
@@ -135,11 +145,9 @@ def climb(altitude_delta:float, fpm:float):
 
 
 def fly_parable():
-     #set_dref(DREF_AP_ACTIVATE, 2.0)
-
      start_alt = 1500.0
      altitude = 200.0
-     fpm = 200.0
+     fpm = 500.0
 
      climb_to(start_alt, fpm)
      wait_until_altitude_reached(altitude, reset_time=True)
@@ -150,12 +158,22 @@ def fly_parable():
 
      climb(-altitude, -fpm)
 
+def set_bank_angle(level: int = 0):
+     # 0=auto 1-6 for 5-30 bank degree in hdg mode
+     set_dref(DREF_AP_SET_HEADING_LEVEL, 6.0) 
+
+def set_heading_delta(delta: float):
+     current_heading = get_current_heading()
+     target_heading = (current_heading + delta) % 360.0
+     set_heading(target_heading)
+
+def set_heading(heading: float):
+     set_dref(DREF_AP_SET_HEADING_IN_DEGREE, heading)
 
 def fly_banks():
-     #set_dref(DREF_AP_STATE_TOGGLE_FLAG, 2.0) #   Heading Hold Engage 
-     #set_dref(DREF_AP_SET_HEADING_LEVEL, 6.0) # wie starke kurven im hdg mode: 1-6 for 5-30 degree
-     #set_dref(DREF_AP_SET_HEADING_IN_DEGREE, 350.0)
-     pass
+     activate_mode_heading()
+     set_bank_angle()
+     set_heading_delta(15.0)
 
 def wait_until_altitude_reached(expected_altitude, reset_time=False):
      '''
