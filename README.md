@@ -21,7 +21,7 @@ Für Dataref kann in der GUI Lesend und Schreibend aktiviert werden. Schreibend 
 Xplane unterscheidet zwischen Dataref und Dataoutputs. Beide Wege sind in Dokumenation unter C./xplane/ TODO gespeichert.
 
 DataRef Lesen: 
-S. 12 
+S. 12
 'SEND ME ALL THE DATAREFS I WANT: RREF'
 
 DataRef Schreiben:
