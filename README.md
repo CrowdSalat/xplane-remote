@@ -1,6 +1,7 @@
 # Python Xplane
 
 ## Firewall config
+** Beachte Updates. Deepin Update hat regeln gelöscht, danach lief kein lesender Zugriff mehr, da die Ports blockierten **
 
 In Windows Rechner in erweiterten Firewall Einstellungen die vorgefertigten Xplane Regeln gelöschtund eine iegene Hinugefügrt, die Incoming Traffic auf Port 49000 von jeden Rechner erlaubt.
 Die anderen Port eigentlich nicht geöffnet, klappt dennoch..
