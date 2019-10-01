@@ -30,10 +30,10 @@ class Test_Xplane_Remote(unittest.TestCase):
         self.assertTrue(900.0 < alti < 1200)
 
     def test_climb_to(self):
-        xpr.climb_to(2000, 500)
+        xpr.climb_to(10000, 2000)
 
     def test_climb(self):
-        xpr.climb(200,200)
+        xpr.climb(100,1000)
     
     def test_set_current_altitude(self):
         expeted_planned_alti = 2000.0

@@ -59,7 +59,7 @@ def config_logger():
      ch.setFormatter(formatter)
 
      script_path = os.path.dirname(sys.argv[0])
-     fh = logging.FileHandler(os.path.join(script_path,'python_remote.log'), encoding='utf-8')
+     fh = logging.FileHandler(os.path.join(script_path,'control_xplane.log'), encoding='utf-8')
      fh.setFormatter(formatter)
 
      logger.addHandler(ch)
@@ -198,11 +198,44 @@ def fly_parable():
      wait_until_altitude_reached(target_altitude)
      rst_msn_time()
 
-def fly_banks():
+def fly_banks(heading_delta = 15.0, bank_mode = 6):
+     '''
+     bank mode 1 - 6
+     '''
+     logger.info('TODO Logging')
      activate_mode_heading()
-     set_bank_angle(6)
-     target_heading = set_heading_delta(15.0)
+     set_bank_angle(bank_mode)
+     target_heading = set_heading_delta(heading_delta)
      wait_until_heading_reached(target_heading)
+     rst_msn_time()
+
+def climb_wait_until_reached_and_reset_time(alt: float, fpm: float):
+     logger.info('TODO Logging')
+     target_alti = climb(alt, fpm)
+     wait_until_altitude_reached(target_alti)
+     rst_msn_time()
+
+def first_trainingsset():
+
+     # fixture
+     start_alt = 1000
+     climb_to(start_alt, 200)
+     wait_until_altitude_reached(start_alt,reset_time=True)     
+
+     #parable
+     fpms = {200.0, 250.0}
+     climbs = (-100, 200, -100, 200)
+
+
+     for fpm in fpms:
+          for climb in climbs:
+               climb_wait_until_reached_and_reset_time(climb, fpm)
+
+     # banks
+     bank_modes = {1,2,3,4,5,6}
+     for bank in bank_modes:
+          fly_banks(bank_mode=bank)
+
 
 
 ### TRAIN FLIGHTS
@@ -218,13 +251,7 @@ def main():
      #TODO find a DREF which can save the name or the number of the maneuver or null if no maneurver
      #TODO design flights with much dynamic
      # climb and sink
-     fly_parable()
-     
-     #reset time
-     rst_msn_time()          
-
-     # banks
-     fly_banks()
+     first_trainingsset()
 
 
 #TODO server beim beenden des skripte runterfahren
