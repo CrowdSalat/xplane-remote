@@ -1,21 +1,23 @@
 import unittest
-import writeDataToXPlane as xpr
+import control_xplane as xpr
 
 
 class Test_Xplane_Remote(unittest.TestCase):
     
     def setUp(self):
-        xpr.init_xp_remote()
-
+        #xpr.init_xp_remote()
+        pass
     def tearDown(self):
-        xpr.close_xp_remote()
+        #xpr.close_xp_remote()
+        pass
 
     @classmethod
     def setUpClass(cls):
-        #xpr.init_xp_remote()
+        xpr.init_xp_remote()
         pass
     @classmethod
     def tearDownClass(clss):
+        xpr.close_xp_remote()
         pass
 
     def test_reset_mission_time(self):
