@@ -1,41 +1,30 @@
-# Python Xplane
+# control xplane python  
+
+## Overview 
+Controls the G1000 Autopilot in the flight simulator X-Plane 11 via the DataRef API. For the handling of the sockets and the DataRef protocol the python module [pyXPUDPServer](https://github.com/leleopard/pyXPUDPServer) is used.
 
 ## Firewall config
-** Beachte Updates. Deepin Update hat regeln gelöscht, danach lief kein lesender Zugriff mehr, da die Ports blockierten **
 
-In Windows Rechner in erweiterten Firewall Einstellungen die vorgefertigten Xplane Regeln gelöschtund eine iegene Hinugefügrt, die Incoming Traffic auf Port 49000 von jeden Rechner erlaubt.
-Die anderen Port eigentlich nicht geöffnet, klappt dennoch..
+Note that you need to open some UDP ports in your firewall if you run the script on another machine as the script.
 
-Beim Linux Rechner alle eingehenden UDP Ports geöffnet, da in der Bibliothek pyxpudpserver mehrere Sockets auf verschiedenen Ports geöffnet werden.
+For the windows computer, which is running X-Plane, you need to open at least the incoming port 49000. If not configured otherwise it is the default incoming port of X-Plane. [Manual for Windows](https://www.thewindowsclub.com/block-open-port-windows-8-firewall).
+
+On the the client machine, which runs the script, you need to open all udp ports. The library *pyXPUDPServer* opens multiple sockets on different ports. I recommend to delete this firewall rule as soon as you are finished running the script.
+
+On a linux machine you can create a firewall rule (temporarly) and delete it with:
 
 ``` shell
+# creates firewall rule (hold only until next restart)
 sudo iptables -I INPUT -p udp -j ACCEPT
+
+#deltes the firewall rule
+sudo iptables -D INPUT -p udp -j ACCEPT
 ```
 
-## Bibliotheken
-https://github.com/leleopard/pyXPUDPServer
-```
+**The creation will only hold until the next restart.**
+
+## libraries
+
+``` shell
 pip3 install pyxpudpserver
 ```
-
-## XPlane Datenschnittstellen Dokumentation
-
-Das Ziel an das Dataoutput kann über die GUI eingestellt werden. Alternativ auch Programmatisch über Sockets.
-
-Für Dataref kann in der GUI Lesend und Schreibend aktiviert werden. Schreibend heißt, dass UDP Packete an das angebene Ziel gesendet  werden. Kann Alternativ Programmatisch geöffnet werden. Lesend scheint keine Auswirkung zu haben, die Schreibenden Python Skripte funktionieren dennoch.
-
-Xplane unterscheidet zwischen Dataref und Dataoutputs. Beide Wege sind in Dokumenation unter C./xplane/ TODO gespeichert.
-
-DataRef Lesen: 
-S. 12
-'SEND ME ALL THE DATAREFS I WANT: RREF'
-
-DataRef Schreiben:
-S. 14
-'SET A DATAREF TO A VALUE: DREF'
-
-DataOutput schreiben:
-S. 15
-SET A DATA OUTPUT TO A VALUE: DATA
-
-Seite 14 der Dokumentation beschreibt wie einzelne DataRefs beschrieben und gelesen werden können.
