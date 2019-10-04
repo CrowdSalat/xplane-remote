@@ -63,6 +63,14 @@ class Test_Xplane_Remote(unittest.TestCase):
     def test_fly_banks(self):
         xpr.fly_banks()
 
+    # activat dataoutput
+    #TODO run
+    def test_activate_dataoutput(self):
+        dout_state = xpr.get_dref('sim/network/dataout/data_to_disk')
+        print(dout_state)
+        dout_state[0] = int(True)
+        xpr.activate_dataoutputs_to_disk(dout_state)
+
     # maneuver definition
     def test_maneuver_def(self):
         start_altitude = 1000

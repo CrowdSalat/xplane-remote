@@ -21,6 +21,9 @@ def config_logger():
      logger.addHandler(ch)
      logger.addHandler(fh)
 
+def activate_dataoutput():
+     dataoutput = [0, 1, 3, 4, 8, 10, 11, 15, 16, 17, 18, 20, 138]
+     xp.activate_dataoutputs_to_disk(dataoutput)
 
 def trainings_set00():
     logger.info('run:' + trainings_set00)
@@ -49,15 +52,13 @@ def trainings_set01():
     xp.fly(maneuvers)
 
 def main():
-    config_logger()
-    xp.init_xp_remote()
+     config_logger()
+     xp.init_xp_remote()
+     activate_dataoutput()
+     #trainings_set00()
 
-    xp.rst_msn_time()
-
-    #trainings_set00()
-
-    xp.close_xp_remote()
-    pass
+     xp.close_xp_remote()
+     
 
 if __name__ == "__main__":
     main()
