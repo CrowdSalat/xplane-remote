@@ -22,30 +22,31 @@ def config_logger():
      logger.addHandler(fh)
 
 
-
 def trainings_set00():
     logger.info('run:' + trainings_set00)
     # fixture
-    start_alt = 1000
-    xp.climb_to(start_alt, 200)
-    xp.wait_until_altitude_reached(start_alt,reset_time=True)     
-
+    
     #parable
+    start_alt = [1000]
     fpms = [200.0, 300.0, 400.0, 500.0]
-    climbs = (-100, 150)
-
-
-    for fpm in fpms:
-        for climb in climbs:
-            logger.info('Climb to {} ft with {} fpm.'.format(climb,fpm))
-            xp.climb_wait_until_reached_and_reset_time(climb, fpm)
+    climbs = [-100, 150]
+    parable = xp.define_flight_maneuvers(start_alt, fpms, climbs, [0],[0])
+    xp.fly(parable)
 
     # banks
-    bank_modes = {1,2,3,4,5,6}
-    for bank in bank_modes:
-        logger.info('Turn in Mode {}.'.format(bank))
-        xp.fly_banks(bank_mode=bank)
+    bank_modes = [1,2,3,4,5,6]
+    banks = xp.define_flight_maneuvers([-1], [0], [0], [90], bank_modes)
+    xp.fly(banks)
 
+
+def trainings_set01():
+    # parable 
+    altitudes = [1000, 2000, 3000, 4000, 5000, 6000]
+    climb = [100, -100]
+    climb_rates = [300, 400, 500]
+
+    maneuvers = xp.define_flight_maneuvers(altitudes, climb, climb_rates, [0], [0])
+    xp.fly(maneuvers)
 
 def main():
     config_logger()
