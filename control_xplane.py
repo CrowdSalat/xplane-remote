@@ -7,7 +7,7 @@ import sys
 import time
 import atexit
 
-logger = logging.getLogger('xplane_remote')
+logger = logging.getLogger('control_xplane')
 
 # DREF API Names 
 DREF_OVERRIDE = 'sim/operation/override/override_planepath'
@@ -50,21 +50,6 @@ def close_xp_remote():
      logger.debug('Shutdown Server.')
      XPUDP.pyXPUDPServer.quit()
      logger.debug('Server shutdown.')
-
-def config_logger():
-     logger.setLevel(logging.DEBUG)
-     
-     formatter = logging.Formatter('%(asctime)s - %(name)s-%(funcName)s - %(levelname)s - %(message)s')
-     
-     ch = logging.StreamHandler()
-     ch.setFormatter(formatter)
-
-     script_path = os.path.dirname(sys.argv[0])
-     fh = logging.FileHandler(os.path.join(script_path,'control_xplane.log'), encoding='utf-8')
-     fh.setFormatter(formatter)
-
-     logger.addHandler(ch)
-     logger.addHandler(fh)
 
 ### MODES
 def activate_mode_ap():
@@ -207,31 +192,6 @@ def climb_wait_until_reached_and_reset_time(alt: float, fpm: float):
      target_alti = climb(alt, fpm)
      wait_until_altitude_reached(target_alti)
      rst_msn_time()
-
-def first_trainingsset():
-
-     # fixture
-     start_alt = 1000
-     climb_to(start_alt, 200)
-     wait_until_altitude_reached(start_alt,reset_time=True)     
-
-     #parable
-     fpms = [200.0, 300.0, 400.0, 500.0]
-     climbs = (-100, 150)
-
-
-     for fpm in fpms:
-          for climb in climbs:
-               logger.info('Climb to {} ft with {} fpm.'.format(climb,fpm))
-               climb_wait_until_reached_and_reset_time(climb, fpm)
-
-     # banks
-     bank_modes = {1,2,3,4,5,6}
-     for bank in bank_modes:
-          logger.info('Turn in Mode {}.'.format(bank))
-          fly_banks(bank_mode=bank)
-
-
 
 if __name__ == "__main__":
      pass
