@@ -2,7 +2,8 @@ import control_xplane as xp
 import logging
 import os, sys
 
-logger = logging.getLogger(__name__)
+logger_name = 'create_trainingsdata'
+logger = logging.getLogger(logger_name)
 
 
 def config_logger():
@@ -14,7 +15,7 @@ def config_logger():
      ch.setFormatter(formatter)
 
      script_path = os.path.dirname(sys.argv[0])
-     fh = logging.FileHandler(os.path.join(script_path, __name__ + '.log'), encoding='utf-8')
+     fh = logging.FileHandler(os.path.join(script_path, logger_name + '.log'), encoding='utf-8')
      fh.setFormatter(formatter)
 
      logger.addHandler(ch)
