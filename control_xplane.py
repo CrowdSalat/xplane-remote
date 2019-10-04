@@ -176,7 +176,7 @@ def fly_banks(heading_delta = 90.0, bank_mode = 6):
      set_bank_angle(bank_mode)
      return set_heading_delta(heading_delta)
 
-### maneuver definition
+### maneuver definition and execution
 
 def define_flight_maneuver(start_altitude, climb, climb_rate, heading_change, bank_angle):
      ''' return dict with the given parameters'''
@@ -207,7 +207,8 @@ def fly(maneuvers):
           activate_mode_ap()
           # reach start altitude and reset time
           start_altitude = maneuver["start_altitude"]
-          climb_to(start_altitude, 300)
+          if start_altitude > 0:
+               climb_to(start_altitude, 300)
           wait_until_altitude_reached(start_altitude, reset_time=True)
           # do maneuver
           target_altitude = climb(maneuver["climb"], maneuver["climb_rate"])
