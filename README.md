@@ -1,9 +1,10 @@
 # control xplane python  
 
-## Overview 
+## overview  
+
 Controls the G1000 Autopilot in the flight simulator X-Plane 11 via the DataRef API. For the handling of the sockets and the DataRef protocol the python module [pyXPUDPServer](https://github.com/leleopard/pyXPUDPServer) is used.
 
-## Firewall config
+## firewall config
 
 Note that you need to open some UDP ports in your firewall if you run the script on another machine as the script.
 
