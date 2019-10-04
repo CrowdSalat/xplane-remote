@@ -40,15 +40,16 @@ DREF_AP_STATE_TOGGLE_FLAG = 'sim/cockpit/autopilot/autopilot_state'
 
 
 def init_xp_remote():
-     logger.info('Start Server.')
-     XPUDP.pyXPUDPServer.initialiseUDP(('127.0.0.1',49008), ('192.168.23.192',49000), 'DESKTOP-0S9NHT3')
+     logger.debug('Start Server.')
+     #XPUDP.pyXPUDPServer.initialiseUDP(('127.0.0.1',49008), ('192.168.23.192',49000), 'DESKTOP-0S9NHT3')
+     XPUDP.pyXPUDPServer.initialiseUDPXMLConfig('UDPSettings.xml')
      XPUDP.pyXPUDPServer.start() 
-     logger.info('Server started.')
+     logger.debug('Server started.')
 
 def close_xp_remote():
-     logger.info('Shutdown Server.')
+     logger.debug('Shutdown Server.')
      XPUDP.pyXPUDPServer.quit()
-     logger.info('Server shutdown.')
+     logger.debug('Server shutdown.')
 
 def config_logger():
      logger.setLevel(logging.DEBUG)
@@ -64,12 +65,6 @@ def config_logger():
 
      logger.addHandler(ch)
      logger.addHandler(fh)
-
-def xp_config_enviroment():
-     '''
-     config weather etc.
-     '''
-     print('-------TODO---------')
 
 ### MODES
 def activate_mode_ap():
@@ -202,7 +197,6 @@ def fly_banks(heading_delta = 15.0, bank_mode = 6):
      '''
      bank mode 1 - 6
      '''
-     logger.info('TODO Logging')
      activate_mode_heading()
      set_bank_angle(bank_mode)
      target_heading = set_heading_delta(heading_delta)
@@ -210,7 +204,6 @@ def fly_banks(heading_delta = 15.0, bank_mode = 6):
      rst_msn_time()
 
 def climb_wait_until_reached_and_reset_time(alt: float, fpm: float):
-     logger.info('TODO Logging')
      target_alti = climb(alt, fpm)
      wait_until_altitude_reached(target_alti)
      rst_msn_time()
@@ -223,39 +216,22 @@ def first_trainingsset():
      wait_until_altitude_reached(start_alt,reset_time=True)     
 
      #parable
-     fpms = {200.0, 250.0}
-     climbs = (-100, 200, -100, 200)
+     fpms = [200.0, 300.0, 400.0, 500.0]
+     climbs = (-100, 150)
 
 
      for fpm in fpms:
           for climb in climbs:
+               logger.info('Climb to {} ft with {} fpm.'.format(climb,fpm))
                climb_wait_until_reached_and_reset_time(climb, fpm)
 
      # banks
      bank_modes = {1,2,3,4,5,6}
      for bank in bank_modes:
+          logger.info('Turn in Mode {}.'.format(bank))
           fly_banks(bank_mode=bank)
 
 
 
-### TRAIN FLIGHTS
-def main():
-     config_logger()
-     init_xp_remote()
-     #TODO turn off wind
-     xp_config_enviroment()
-
-     #TODO reset fuel
-
-     #TODO log maneuvers
-     #TODO find a DREF which can save the name or the number of the maneuver or null if no maneurver
-     #TODO design flights with much dynamic
-     # climb and sink
-     first_trainingsset()
-
-
-#TODO server beim beenden des skripte runterfahren
-# atexit.register(close_xp_remote)
 if __name__ == "__main__":
-     main()
-
+     pass
