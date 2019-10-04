@@ -50,9 +50,6 @@ class Test_Xplane_Remote(unittest.TestCase):
         xpr.set_planned_climbrate(200.0)
         xpr.set_planned_climbrate(0.0)
 
-    def test_fly_parable(self):
-        xpr.fly_parable()
-
     # direction
     def test_get_heading(self):
         degree = xpr.get_current_heading() 
@@ -65,6 +62,34 @@ class Test_Xplane_Remote(unittest.TestCase):
 
     def test_fly_banks(self):
         xpr.fly_banks()
+
+    # maneuver definition
+    def test_maneuver_def(self):
+        start_altitude = 1000
+        climb = 200
+        climb_rate = 200 
+        heading_change = 0 
+        bank_angle = 0
+        expected_maneuver = {
+          "start_altitude": start_altitude,
+          "climb": climb,
+          "climb_rate": climb_rate,
+          "heading_change": heading_change,
+          "bank_angle": bank_angle
+          }
+        maneuver = xpr.define_flight_maneuver(start_altitude, climb, climb_rate, heading_change, bank_angle)
+        self.assertEquals(maneuver, expected_maneuver)
+
+    def test_permutations(self):
+        start_altitudes = [1000, 1001]
+        climbs = [200,201]
+        climb_rates = [300, 301] 
+        heading_changes = [1,2] 
+        bank_angles = [10,11]
+        maneuvers = xpr.define_flight_maneuvers(start_altitudes, climbs, climb_rates,
+            heading_changes, bank_angles)
+        expected_permutation_nr = 2 * 2 * 2 * 2 * 2
+        self.assertEqual(len(maneuvers), expected_permutation_nr)
 
     #not an actual test, just here for convenience
     def test_ask_dref_values(self):

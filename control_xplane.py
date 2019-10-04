@@ -5,7 +5,7 @@ import socket
 import struct
 import sys
 import time
-import atexit
+import itertools
 
 logger = logging.getLogger('control_xplane')
 
@@ -108,7 +108,6 @@ def get_dref(dref_name: str):
 ### CHECK STATE
 
 def wait_until_x_reached(function_to_load_actual_value, expected_value,tolerance,reset_time):
-     function_to_load_actual_value()     
      value_not_reached = True
      while value_not_reached:
           current_value = function_to_load_actual_value()
@@ -126,8 +125,16 @@ def wait_until_heading_reached(expected_heading, reset_time=False):
 def wait_until_altitude_reached(expected_altitude, reset_time=False):
      wait_until_x_reached(get_current_altitude, expected_altitude, 50.0,reset_time)
 
-### MANEUVER
+def wait_until_reached(target_altitude, target_banks):
+     while True:
+          cur_alt = get_current_altitude()
+          cur_head =get_current_heading ()
+          if(target_altitude ==cur_alt and 
+          cur_head == target_banks):
+               break
+          time.sleep(1.0)
 
+### MANEUVER
 
 def set_bank_angle(level: int = 0):
      # 0=auto 1-6 for 5-30 bank degree in hdg mode
@@ -161,37 +168,52 @@ def climb(altitude_delta:float, fpm:float):
      climb_to(altitude_target, fpm)
      return altitude_target
 
-
-def fly_parable():
-     start_alt = 1000.0
-     altitude_delta = 200.0
-     fpm = 500.0
-
-     climb_to(start_alt, fpm)
-     wait_until_altitude_reached(start_alt, reset_time=True)
-
-     target_altitude = climb(altitude_delta, fpm)
-     wait_until_altitude_reached(target_altitude)
-     rst_msn_time()
-
-     climb(-altitude_delta, -fpm)
-     wait_until_altitude_reached(target_altitude)
-     rst_msn_time()
-
-def fly_banks(heading_delta = 15.0, bank_mode = 6):
+def fly_banks(heading_delta = 90.0, bank_mode = 6):
      '''
      bank mode 1 - 6
      '''
      activate_mode_heading()
      set_bank_angle(bank_mode)
-     target_heading = set_heading_delta(heading_delta)
-     wait_until_heading_reached(target_heading)
-     rst_msn_time()
+     return set_heading_delta(heading_delta)
 
-def climb_wait_until_reached_and_reset_time(alt: float, fpm: float):
-     target_alti = climb(alt, fpm)
-     wait_until_altitude_reached(target_alti)
-     rst_msn_time()
+### maneuver definition
+
+def define_flight_maneuver(start_altitude, climb, climb_rate, heading_change, bank_angle):
+     ''' return dict with the given parameters'''
+     ret = {
+          "start_altitude": start_altitude,
+          "climb": climb,
+          "climb_rate": climb_rate,
+          "heading_change": heading_change,
+          "bank_angle": bank_angle
+          }
+     return ret
+
+def define_flight_maneuvers(start_altitudes, climbs, climb_rates, heading_changes, bank_angles):
+     '''returns list with all one dict for each permutation of the parameters'''
+     permutations = list(itertools.product(start_altitudes, climbs, climb_rates,
+          heading_changes, bank_angles))
+     manuveuvers = []
+     for permutation in permutations:
+          manuveuver = define_flight_maneuver(*permutation)
+          manuveuvers.append(manuveuver)
+     return manuveuvers
+
+def fly(maneuvers):
+     '''
+     maneuvers -- which are generated with define_flight_maneuvers
+     '''
+     for maneuver in maneuvers:
+          activate_mode_ap()
+          # reach start altitude and reset time
+          start_altitude = maneuver["start_altitude"]
+          climb_to(start_altitude, 300)
+          wait_until_altitude_reached(start_altitude, reset_time=True)
+          # do maneuver
+          target_altitude = climb(maneuver["climb"], maneuver["climb_rate"])
+          target_banks = fly_banks(maneuver["heading_change"]), maneuver["bank_angle"]
+          wait_until_reached(target_altitude, target_banks)
+          rst_msn_time()
 
 if __name__ == "__main__":
      pass
