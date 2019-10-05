@@ -7,38 +7,43 @@ logger = logging.getLogger(logger_name)
 
 
 def config_logger():
-     logger.setLevel(logging.DEBUG)
-     
-     formatter = logging.Formatter('%(asctime)s - %(name)s-%(funcName)s - %(levelname)s - %(message)s')
-     
-     ch = logging.StreamHandler()
-     ch.setFormatter(formatter)
+    logging.basicConfig(level=logging.INFO)
+    logger.setLevel(logging.DEBUG)
+    
+    formatter = logging.Formatter('%(asctime)s - %(name)s-%(funcName)s - %(levelname)s - %(message)s')
+    
+    ch = logging.StreamHandler()
+    ch.setFormatter(formatter)
 
-     script_path = os.path.dirname(sys.argv[0])
-     fh = logging.FileHandler(os.path.join(script_path, logger_name + '.log'), encoding='utf-8')
-     fh.setFormatter(formatter)
+    script_path = os.path.dirname(sys.argv[0])
+    fh = logging.FileHandler(os.path.join(script_path, logger_name + '.log'), encoding='utf-8')
+    fh.setFormatter(formatter)
 
-     logger.addHandler(ch)
-     logger.addHandler(fh)
+    logger.addHandler(ch)
+    logger.addHandler(fh)
 
+#TODO test
 def activate_dataoutput():
-     dataoutput = [0, 1, 3, 4, 8, 10, 11, 15, 16, 17, 18, 20, 138]
-     xp.activate_dataoutputs_to_disk(dataoutput)
+    dataoutput = [0, 1, 3, 4, 8, 10, 11, 15, 16, 17, 18, 20, 138]
+    xp.activate_dataoutputs_to_disk(dataoutput)
 
 def trainings_set00():
-    logger.info('run:' + trainings_set00)
+    logger.info('run trainings_set00')
     # fixture
     
     #parable
     start_alt = [1000]
-    fpms = [200.0, 300.0, 400.0, 500.0]
     climbs = [-100, 150]
-    parable = xp.define_flight_maneuvers(start_alt, fpms, climbs, [0],[0])
+    fpms = [200.0, 300.0, 400.0, 500.0]
+    parable = xp.define_flight_maneuvers(start_alt, climbs, fpms, [0],[0])
+    #logger.info(parable)
     xp.fly(parable)
 
     # banks
     bank_modes = [1,2,3,4,5,6]
     banks = xp.define_flight_maneuvers([-1], [0], [0], [90], bank_modes)
+    #logger.info(parable)
+
     xp.fly(banks)
 
 
@@ -52,12 +57,11 @@ def trainings_set01():
     xp.fly(maneuvers)
 
 def main():
-     config_logger()
-     xp.init_xp_remote()
-     activate_dataoutput()
-     #trainings_set00()
+    config_logger()
+    xp.init_xp_remote()
+    trainings_set00()
 
-     xp.close_xp_remote()
+    xp.close_xp_remote()
      
 
 if __name__ == "__main__":
