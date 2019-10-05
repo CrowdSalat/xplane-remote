@@ -131,12 +131,14 @@ def wait_until_heading_reached(expected_heading, reset_time=False):
 def wait_until_altitude_reached(expected_altitude, reset_time=False):
      wait_until_x_reached(get_current_altitude, expected_altitude, 50.0,reset_time)
 
-def wait_until_reached(target_altitude, target_banks):
+def wait_until_reached(target_altitude: float, target_banks: float):
      while True:
           cur_alt = get_current_altitude()
-          cur_head =get_current_heading ()
-          if(target_altitude ==cur_alt and 
-          cur_head == target_banks):
+          cur_head = get_current_heading ()
+          dif_altitude = abs(target_altitude - cur_alt)
+          dif_heading = abs(target_banks - cur_head)
+          if( dif_altitude < 20.0 and 
+          dif_heading < 2.0):
                break
           time.sleep(1.0)
 
@@ -210,6 +212,7 @@ def fly(maneuvers):
      maneuvers -- which are generated with define_flight_maneuvers
      '''
      for maneuver in maneuvers:
+          logger.info(maneuver)
           activate_mode_ap()
           # reach start altitude and reset time
           start_altitude = maneuver["start_altitude"]
@@ -218,7 +221,7 @@ def fly(maneuvers):
           wait_until_altitude_reached(start_altitude, reset_time=True)
           # do maneuver
           target_altitude = climb(maneuver["climb"], maneuver["climb_rate"])
-          target_banks = fly_banks(maneuver["heading_change"]), maneuver["bank_angle"]
+          target_banks = fly_banks(maneuver["heading_change"], maneuver["bank_angle"])
           wait_until_reached(target_altitude, target_banks)
           rst_msn_time()
 
