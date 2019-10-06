@@ -1,0 +1,10 @@
+2019-10-06 16:20:59,002 - xplane-remote#init_xp_remote - DEBUG - Start Server.
+2019-10-06 16:20:59,006 - xplane-remote#init_xp_remote - DEBUG - Server started.
+2019-10-06 16:20:59,007 - xplane-remote#fly - INFO - {'start_altitude': 2000, 'heading_change': 0, 'climb': 100, 'climb_rate': 300, 'bank_angle': 0}
+2019-10-06 16:25:05,328 - xplane-remote#fly - INFO - {'start_altitude': 2000, 'heading_change': 0, 'climb': 100, 'climb_rate': 400, 'bank_angle': 0}
+2019-10-06 16:25:40,794 - xplane-remote#fly - INFO - {'start_altitude': 2000, 'heading_change': 0, 'climb': 100, 'climb_rate': 500, 'bank_angle': 0}
+2019-10-06 16:26:18,844 - xplane-remote#fly - INFO - {'start_altitude': 2000, 'heading_change': 0, 'climb': -100, 'climb_rate': 300, 'bank_angle': 0}
+2019-10-06 16:27:32,937 - xplane-remote#fly - INFO - {'start_altitude': 2000, 'heading_change': 0, 'climb': -100, 'climb_rate': 400, 'bank_angle': 0}
+2019-10-06 16:28:07,983 - xplane-remote#fly - INFO - {'start_altitude': 2000, 'heading_change': 0, 'climb': -100, 'climb_rate': 500, 'bank_angle': 0}
+2019-10-06 16:28:46,032 - xplane-remote#fly - INFO - {'start_altitude': 3000, 'heading_change': 0, 'climb': 100, 'climb_rate': 300, 'bank_angle': 0}
+2019-10-06 16:32:53,351 - xplane-remote#fly - INFO - {'start_altitude': 3000, 'heading_change': 0, 'climb': 100, 'climb_rate': 400, 'bank_angle': 0}

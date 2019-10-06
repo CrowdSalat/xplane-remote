@@ -45,7 +45,7 @@ def trainings_set00():
 
 def trainings_set01():
     # parable 
-    altitudes = [1000, 2000, 3000, 4000, 5000, 6000]
+    altitudes = [2000]
     climb = [100, -100]
     climb_rates = [300, 400, 500]
 
@@ -55,7 +55,9 @@ def trainings_set01():
 def main():
     config_logger()
     xp.init_xp_remote()
-    trainings_set00()
+    
+    #trainings_set00()
+    trainings_set01()
 
     xp.close_xp_remote()
      
