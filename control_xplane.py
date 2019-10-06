@@ -207,7 +207,7 @@ def sort_maneuvers(manuveuvers):
      return sorted(manuveuvers, key=lambda k: (k['start_altitude'], 
      k['climb_rate'],k['bank_angle'])) 
      
-def fly(maneuvers):
+def fly(maneuvers, settle_time=3.0):
      '''
      maneuvers -- which are generated with define_flight_maneuvers
      '''
@@ -218,13 +218,16 @@ def fly(maneuvers):
           start_altitude = maneuver["start_altitude"]
           if start_altitude > 0:
                climb_to(start_altitude, maneuver["climb_rate"])
-               wait_until_altitude_reached(start_altitude, reset_time=True)
+               wait_until_altitude_reached(start_altitude)
+               time.sleep(settle_time)
+               rst_msn_time()
+
           # do maneuver
           target_altitude = climb(maneuver["climb"], maneuver["climb_rate"])
           target_banks = fly_banks(maneuver["heading_change"], maneuver["bank_angle"])
           wait_until_reached(target_altitude, target_banks)
+          time.sleep(settle_time)
           rst_msn_time()
-          time.sleep(3)
 
 if __name__ == "__main__":
      pass
