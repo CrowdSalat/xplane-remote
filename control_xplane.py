@@ -136,9 +136,9 @@ def wait_until_reached(target_altitude: float, target_banks: float):
 
 ### MANEUVER
 
-def set_bank_angle(level: int = 0):
+def set_bank_angle(level: float = 0.0):
      # 0=auto 1-6 for 5-30 bank degree in hdg mode
-     set_dref(DREF_AP_SET_HEADING_LEVEL, 6.0) 
+     set_dref(DREF_AP_SET_HEADING_LEVEL, level) 
 
 def set_heading_delta(delta: float):
      current_heading = get_current_heading()
@@ -151,6 +151,8 @@ def set_heading(heading: float):
 
 
 def climb_to(altitude_target:float, fpm:float):
+     if altitude_target <= 0:
+          return
      cur_alti = get_current_altitude()
      delta = altitude_target - cur_alti
 
@@ -164,16 +166,21 @@ def climb_to(altitude_target:float, fpm:float):
 
 def climb(altitude_delta:float, fpm:float):
      current_altitude = get_current_altitude()
+     if altitude_delta == 0:
+          return current_altitude
      altitude_target = current_altitude + altitude_delta
      climb_to(altitude_target, fpm)
      return altitude_target
 
-def fly_banks(heading_delta = 90.0, bank_mode = 6):
+def fly_banks(heading_delta = 90.0, bank_mode = 6.0):
      '''
      bank mode 1 - 6
      '''
      activate_mode_heading()
      set_bank_angle(bank_mode)
+     # let the direction settle
+     set_heading_delta(heading_delta/10)
+     time.sleep(2.0)
      return set_heading_delta(heading_delta)
 
 ### maneuver definition and execution
@@ -206,24 +213,30 @@ def sort_maneuvers(manuveuvers):
      return sorted(manuveuvers, key=lambda k: (k['start_altitude'], 
      k['climb_rate'],k['bank_angle'])) 
      
-def fly(maneuvers, settle_time=3.0):
+def fly(maneuvers, settle_time=6.0):
      '''
      maneuvers -- which are generated with define_flight_maneuvers
      '''
      for maneuver in maneuvers:
           logger.info(maneuver)
+          start_altitude_param = maneuver["start_altitude"]
+          climb_rate_param = maneuver["climb_rate"]
+          climb_param = maneuver["climb"]
+          heading_change_param = maneuver["heading_change"]
+          bank_level_param =  maneuver["bank_angle"]
           activate_mode_ap()
           # reach start altitude and reset time
-          start_altitude = maneuver["start_altitude"]
-          if start_altitude > 0:
-               climb_to(start_altitude, maneuver["climb_rate"])
-               wait_until_altitude_reached(start_altitude)
+          if start_altitude_param > 0:
+               climb_to(start_altitude_param, climb_rate_param)
+               fly_banks(heading_change_param *-1, 4.0)
+               wait_until_altitude_reached(start_altitude_param)
+               set_heading_delta(0)
                time.sleep(settle_time)
                rst_msn_time()
 
           # do maneuver
-          target_altitude = climb(maneuver["climb"], maneuver["climb_rate"])
-          target_banks = fly_banks(maneuver["heading_change"], maneuver["bank_angle"])
+          target_altitude = climb(climb_param, climb_rate_param)
+          target_banks = fly_banks(heading_change_param, bank_level_param)
           wait_until_reached(target_altitude, target_banks)
           time.sleep(settle_time)
           rst_msn_time()
