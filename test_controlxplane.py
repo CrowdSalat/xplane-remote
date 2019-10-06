@@ -61,7 +61,14 @@ class Test_Xplane_Remote(unittest.TestCase):
         xpr.set_heading(0.0)
 
     def test_fly_banks(self):
-        xpr.fly_banks()
+        xpr.fly_banks(50.0, 3.0)
+
+    def test_spiral_up(self):
+        altitude = 1600
+        xpr.climb_to(altitude, 500)
+        xpr.fly_banks(90.0, 1.0)
+        xpr.wait_until_altitude_reached(altitude)
+        xpr.set_heading_delta(0)
 
     # maneuver definition
     def test_maneuver_def(self):
