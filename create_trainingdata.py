@@ -45,11 +45,11 @@ def trainings_set00():
 
 def trainings_set01():
     # parable 
-    altitudes = [2000]
+    altitudes = [1000, 2000, 3000, 4000, 5000]
     climb = [100, -100]
     climb_rates = [300, 400, 500]
 
-    maneuvers = xp.define_flight_maneuvers(altitudes, climb, climb_rates, [0], [0])
+    maneuvers = xp.define_flight_maneuvers(altitudes, climb, climb_rates, [0], [0], sort=True)
     xp.fly(maneuvers)
 
 def main():
