@@ -24,6 +24,7 @@ def config_logger():
 
 def trainings_set00():
     logger.info('run trainings_set00')
+    xp.rst_msn_time()
     # fixture
     
     #parable
