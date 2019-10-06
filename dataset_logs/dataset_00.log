@@ -1,0 +1,19 @@
+2019-10-06 13:01:54,829 - xplane-remote#init_xp_remote - DEBUG - Start Server.
+2019-10-06 13:01:54,835 - xplane-remote#init_xp_remote - DEBUG - Server started.
+2019-10-06 13:01:54,836 - xplane-remote#trainings_set00 - INFO - run trainings_set00
+2019-10-06 13:01:54,837 - xplane-remote#fly - INFO - {'start_altitude': 1000, 'heading_change': 0, 'climb': -100, 'bank_angle': 0, 'climb_rate': 200.0}
+2019-10-06 13:02:55,906 - xplane-remote#fly - INFO - {'start_altitude': 1000, 'heading_change': 0, 'climb': -100, 'bank_angle': 0, 'climb_rate': 300.0}
+2019-10-06 13:03:43,966 - xplane-remote#fly - INFO - {'start_altitude': 1000, 'heading_change': 0, 'climb': -100, 'bank_angle': 0, 'climb_rate': 400.0}
+2019-10-06 13:04:24,015 - xplane-remote#fly - INFO - {'start_altitude': 1000, 'heading_change': 0, 'climb': -100, 'bank_angle': 0, 'climb_rate': 500.0}
+2019-10-06 13:05:02,064 - xplane-remote#fly - INFO - {'start_altitude': 1000, 'heading_change': 0, 'climb': 100, 'bank_angle': 0, 'climb_rate': 200.0}
+2019-10-06 13:06:02,137 - xplane-remote#fly - INFO - {'start_altitude': 1000, 'heading_change': 0, 'climb': 100, 'bank_angle': 0, 'climb_rate': 300.0}
+2019-10-06 13:06:42,181 - xplane-remote#fly - INFO - {'start_altitude': 1000, 'heading_change': 0, 'climb': 100, 'bank_angle': 0, 'climb_rate': 400.0}
+2019-10-06 13:07:22,226 - xplane-remote#fly - INFO - {'start_altitude': 1000, 'heading_change': 0, 'climb': 100, 'bank_angle': 0, 'climb_rate': 500.0}
+2019-10-06 13:08:01,273 - xplane-remote#fly - INFO - {'start_altitude': -1, 'heading_change': 90, 'climb': 0, 'bank_angle': 1, 'climb_rate': 0}
+2019-10-06 13:09:50,402 - xplane-remote#fly - INFO - {'start_altitude': -1, 'heading_change': 90, 'climb': 0, 'bank_angle': 2, 'climb_rate': 0}
+2019-10-06 13:11:42,538 - xplane-remote#fly - INFO - {'start_altitude': -1, 'heading_change': 90, 'climb': 0, 'bank_angle': 3, 'climb_rate': 0}
+2019-10-06 13:13:28,666 - xplane-remote#fly - INFO - {'start_altitude': -1, 'heading_change': 90, 'climb': 0, 'bank_angle': 4, 'climb_rate': 0}
+2019-10-06 13:15:00,777 - xplane-remote#fly - INFO - {'start_altitude': -1, 'heading_change': 90, 'climb': 0, 'bank_angle': 5, 'climb_rate': 0}
+2019-10-06 13:16:52,909 - xplane-remote#fly - INFO - {'start_altitude': -1, 'heading_change': 90, 'climb': 0, 'bank_angle': 6, 'climb_rate': 0}
+2019-10-06 13:18:44,045 - xplane-remote#close_xp_remote - DEBUG - Shutdown Server.
+2019-10-06 13:18:44,047 - xplane-remote#close_xp_remote - DEBUG - Server shutdown.
