@@ -52,12 +52,25 @@ def trainings_set01():
     maneuvers = xp.define_flight_maneuvers(altitudes, climb, climb_rates, [0], [0], sort=True)
     xp.fly(maneuvers)
 
+def trainings_set02():
+    '''
+    bank flight on constant height: 90 degree both directions; 5,10,15,20 bank angle
+    spiral up to new altitude with 500fpm
+    '''
+    logger.info('run trainings_set02')
+    altitudes = [1000, 1500, 2000, 2500, 3000, 3500,  4000, 4500,  5000]
+    heading_changes = [90.0, -90.0]
+    bank_modes = [1, 2, 3, 4]
+    maneuvers = xp.define_flight_maneuvers(altitudes, [0], [500.0], heading_changes, bank_modes , sort=True)
+    xp.fly(maneuvers)
+
 def main():
     config_logger()
     xp.init_xp_remote()
     
     #trainings_set00()
-    trainings_set01()
+    #trainings_set01()
+    trainings_set02()
 
     xp.close_xp_remote()
      
