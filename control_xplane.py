@@ -122,7 +122,7 @@ def wait_until_heading_reached(expected_heading, reset_time=False):
      
 
 def wait_until_altitude_reached(expected_altitude, reset_time=False):
-     wait_until_x_reached(get_current_altitude, expected_altitude, 50.0,reset_time)
+     wait_until_x_reached(get_current_altitude, expected_altitude, 20.0,reset_time)
 
 def wait_until_reached(target_altitude: float, target_banks: float):
      while True:
@@ -190,7 +190,7 @@ def define_flight_maneuver(start_altitude, climb, climb_rate, heading_change, ba
           }
      return ret
 
-def define_flight_maneuvers(start_altitudes, climbs, climb_rates, heading_changes, bank_angles):
+def define_flight_maneuvers(start_altitudes, climbs, climb_rates, heading_changes, bank_angles, sort=False):
      '''returns list with all one dict for each permutation of the parameters'''
      permutations = list(itertools.product(start_altitudes, climbs, climb_rates,
           heading_changes, bank_angles))
@@ -198,8 +198,15 @@ def define_flight_maneuvers(start_altitudes, climbs, climb_rates, heading_change
      for permutation in permutations:
           manuveuver = define_flight_maneuver(*permutation)
           manuveuvers.append(manuveuver)
-     return manuveuvers
+     if sort:
+          return sort_maneuvers(manuveuvers)
+     else:
+          return manuveuvers
 
+def sort_maneuvers(manuveuvers):
+     return sorted(manuveuvers, key=lambda k: (k['start_altitude'], 
+     k['climb_rate'],k['bank_angle'])) 
+     
 def fly(maneuvers):
      '''
      maneuvers -- which are generated with define_flight_maneuvers
@@ -210,13 +217,14 @@ def fly(maneuvers):
           # reach start altitude and reset time
           start_altitude = maneuver["start_altitude"]
           if start_altitude > 0:
-               climb_to(start_altitude, 300)
-          wait_until_altitude_reached(start_altitude, reset_time=True)
+               climb_to(start_altitude, maneuver["climb_rate"])
+               wait_until_altitude_reached(start_altitude, reset_time=True)
           # do maneuver
           target_altitude = climb(maneuver["climb"], maneuver["climb_rate"])
           target_banks = fly_banks(maneuver["heading_change"], maneuver["bank_angle"])
           wait_until_reached(target_altitude, target_banks)
           rst_msn_time()
+          time.sleep(3)
 
 if __name__ == "__main__":
      pass
