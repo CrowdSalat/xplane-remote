@@ -1,6 +1,6 @@
 <XPUDPConfig>
 	<IP address="127.0.0.1" port="49008" />
-	<XPIP address="192.168.23.192" port="49000" />
+	<XPIP address="127.0.0.1" port="49000" />
 	<XPComputerName network_name="DESKTOP-0S9NHT3" />
 	<RedirectUDPtraffic state="False" />
     <!-- 	<RedirectIP address="" port="" /> -->
