@@ -22,11 +22,6 @@ def config_logger():
     logger.addHandler(ch)
     logger.addHandler(fh)
 
-#TODO test
-def activate_dataoutput():
-    dataoutput = [0, 1, 3, 4, 8, 10, 11, 15, 16, 17, 18, 20, 138]
-    xp.activate_dataoutputs_to_disk(dataoutput)
-
 def trainings_set00():
     logger.info('run trainings_set00')
     # fixture

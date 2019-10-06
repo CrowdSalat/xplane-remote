@@ -92,13 +92,6 @@ def get_current_altitude():
 def get_current_heading():
      return get_dref(DREF_INDICATOR_HEADING)
 
-# TODO test
-def activate_dataoutputs_to_disk(dataoutput_indices , activate = True):
-     dout_state = get_dref('sim/network/dataout/data_to_disk')
-     for dataoutput_index in dataoutput_indices:
-          dout_state[dataoutput_index] = int(activate)
-     set_dref('sim/network/dataout/data_to_disk', dout_state)
-
 ### DREF SET/GET
 def set_dref(dref_name, target_value, index= 0):
      XPUDP.pyXPUDPServer.sendXPDref(dref_name,index,target_value)
