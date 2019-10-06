@@ -122,7 +122,7 @@ def wait_until_heading_reached(expected_heading, reset_time=False):
      
 
 def wait_until_altitude_reached(expected_altitude, reset_time=False):
-     wait_until_x_reached(get_current_altitude, expected_altitude, 20.0,reset_time)
+     wait_until_x_reached(get_current_altitude, expected_altitude, 25.0,reset_time)
 
 def wait_until_reached(target_altitude: float, target_banks: float):
      while True:
@@ -130,7 +130,7 @@ def wait_until_reached(target_altitude: float, target_banks: float):
           cur_head = get_current_heading ()
           dif_altitude = abs(target_altitude - cur_alt)
           dif_heading = abs(target_banks - cur_head)
-          if( dif_altitude < 20.0 and 
+          if( dif_altitude < 25.0 and 
           dif_heading < 2.0):
                break
 
@@ -206,7 +206,7 @@ def sort_maneuvers(manuveuvers):
      return sorted(manuveuvers, key=lambda k: (k['start_altitude'], 
      k['climb_rate'],k['bank_angle'])) 
      
-def fly(maneuvers, settle_time=3.0):
+def fly(maneuvers, settle_time=6.0):
      '''
      maneuvers -- which are generated with define_flight_maneuvers
      '''
