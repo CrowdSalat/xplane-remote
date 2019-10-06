@@ -133,7 +133,6 @@ def wait_until_reached(target_altitude: float, target_banks: float):
           if( dif_altitude < 20.0 and 
           dif_heading < 2.0):
                break
-          time.sleep(1.0)
 
 ### MANEUVER
 
