@@ -28,7 +28,7 @@ def trainings_set00():
     
     #parable
     start_alt = [1000]
-    climbs = [-100, 150]
+    climbs = [-100, 100]
     fpms = [200.0, 300.0, 400.0, 500.0]
     parable = xp.define_flight_maneuvers(start_alt, climbs, fpms, [0],[0])
     #logger.info(parable)
