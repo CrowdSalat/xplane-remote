@@ -2,7 +2,7 @@ import control_xplane as xp
 import logging
 import os, sys
 
-logger_name = 'create_trainingsdata'
+logger_name = 'xplane-remote'
 logger = logging.getLogger(logger_name)
 
 
@@ -10,7 +10,7 @@ def config_logger():
     logging.basicConfig(level=logging.INFO)
     logger.setLevel(logging.DEBUG)
     
-    formatter = logging.Formatter('%(asctime)s - %(name)s-%(funcName)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(name)s#%(funcName)s - %(levelname)s - %(message)s')
     
     ch = logging.StreamHandler()
     ch.setFormatter(formatter)

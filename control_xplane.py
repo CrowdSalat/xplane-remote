@@ -7,7 +7,7 @@ import sys
 import time
 import itertools
 
-logger = logging.getLogger('control_xplane')
+logger = logging.getLogger('xplane-remote')
 
 # DREF API Names 
 DREF_OVERRIDE = 'sim/operation/override/override_planepath'
