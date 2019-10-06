@@ -87,7 +87,7 @@ class Test_Xplane_Remote(unittest.TestCase):
         heading_changes = [1,2] 
         bank_angles = [10,11]
         maneuvers = xpr.define_flight_maneuvers(start_altitudes, climbs, climb_rates,
-            heading_changes, bank_angles)
+            heading_changes, bank_angles, sort=True)
         expected_permutation_nr = 2 * 2 * 2 * 2 * 2
         self.assertEqual(len(maneuvers), expected_permutation_nr)
 
