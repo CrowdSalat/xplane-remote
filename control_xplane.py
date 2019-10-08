@@ -89,6 +89,12 @@ def set_planned_altitude(target_altitude: float):
 def get_current_altitude():
      return get_dref(DREF_INDICATOR_ALTI)
 
+def get_planned_altitude():
+     return get_dref(DREF_AP_SET_ALTI_IN_FEET)
+
+def get_planned_climbrate():
+     return get_dref(DREF_AP_SET_VV_IN_FPM2)
+
 def get_current_heading():
      return get_dref(DREF_INDICATOR_HEADING)
 
@@ -105,34 +111,42 @@ def get_dref(dref_name: str):
 
 
 ### CHECK STATE
+def reset_planned_altitude(target_altitude):
+     planned_altitude = get_planned_altitude()
+     if abs(planned_altitude - target_altitude) > 20.0:
+          set_planned_altitude(target_altitude)
 
-def wait_until_x_reached(function_to_load_actual_value, expected_value,tolerance,reset_time):
-     value_not_reached = True
-     while value_not_reached:
-          current_value = function_to_load_actual_value()
-          delta_value = expected_value - current_value
-          if abs(delta_value) < tolerance:
-               value_not_reached = False 
-          if reset_time:
-               rst_msn_time()
-          time.sleep(1)
+def correct_climb_direction(current_altitude, target_altitude):
+     climbrate = get_planned_climbrate()
+     false_direction = 0 > (target_altitude - current_altitude ) * climbrate
+     if false_direction:
+          set_planned_climbrate(climbrate * -1)
 
-def wait_until_heading_reached(expected_heading, reset_time=False):
-     wait_until_x_reached(get_current_heading, expected_heading, 2.0, reset_time)
-     
+def wait_until_heading_reached(expected_heading):
+     wait_until_reached(-1 , expected_heading)
 
-def wait_until_altitude_reached(expected_altitude, reset_time=False):
-     wait_until_x_reached(get_current_altitude, expected_altitude, 20.0,reset_time)
+def wait_until_altitude_reached(expected_altitude):
+     wait_until_reached(expected_altitude, -1)
 
 def wait_until_reached(target_altitude: float, target_banks: float):
+     check_altitude = target_altitude >= 0
+     dif_altitude = 0
+     check_heading = target_banks >= 0
+     dif_heading = 0
      while True:
-          cur_alt = get_current_altitude()
-          cur_head = get_current_heading ()
-          dif_altitude = abs(target_altitude - cur_alt)
-          dif_heading = abs(target_banks - cur_head)
+          if check_altitude:
+               cur_alt = get_current_altitude()
+               dif_altitude = abs(target_altitude - cur_alt)
+               reset_planned_altitude(target_altitude)
+               correct_climb_direction(cur_alt, target_altitude)
+          if check_heading:
+               cur_head = get_current_heading ()
+               dif_heading = abs(target_banks - cur_head)
+          
           if( dif_altitude < 20.0 and 
           dif_heading < 2.0):
                break
+          time.sleep(1.0)
 
 ### MANEUVER
 
@@ -210,8 +224,8 @@ def define_flight_maneuvers(start_altitudes, climbs, climb_rates, heading_change
           return manuveuvers
 
 def sort_maneuvers(manuveuvers):
-     return sorted(manuveuvers, key=lambda k: (k['start_altitude'], 
-     k['climb_rate'],k['bank_angle'])) 
+     return sorted(manuveuvers, key=lambda k: (k['start_altitude'], k['climb_rate'],k['bank_angle'])) 
+ 
      
 def fly(maneuvers, settle_time=6.0):
      '''
@@ -227,8 +241,8 @@ def fly(maneuvers, settle_time=6.0):
           activate_mode_ap()
           # reach start altitude and reset time
           if start_altitude_param > 0:
-               climb_to(start_altitude_param, climb_rate_param)
-               fly_banks(heading_change_param *-1, 4.0)
+               climb_to(start_altitude_param, 600.0)
+               fly_banks(heading_change_param * -1, 4.0)
                wait_until_altitude_reached(start_altitude_param)
                set_heading_delta(0)
                time.sleep(settle_time)
