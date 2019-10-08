@@ -64,13 +64,28 @@ def trainings_set02():
     maneuvers = xp.define_flight_maneuvers(altitudes, [0], [500.0], heading_changes, bank_modes , sort=True)
     xp.fly(maneuvers)
 
+def trainings_set03():
+    '''
+    fly parable in 100 difference and then climb to 500ft 
+    '''
+    logger.info('run trainings_set02')
+    altitudes = [1500, 2500,  3500,  4500]
+    climb = [100, -100]
+    climb_rates = [600, 500, 400, 300, 200]
+
+    maneuvers = xp.define_flight_maneuvers(altitudes, climb,climb_rates, [0], [0] , sort=True)
+
+    xp.fly(maneuvers)
+
+
 def main():
     config_logger()
     xp.init_xp_remote()
     
     #trainings_set00()
     #trainings_set01()
-    trainings_set02()
+    #trainings_set02()
+    trainings_set03()
 
     xp.close_xp_remote()
      
