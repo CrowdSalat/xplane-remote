@@ -244,7 +244,6 @@ def fly(maneuvers, settle_time=6.0):
                climb_to(start_altitude_param, climb_rate_param)
                fly_banks(heading_change_param * -1, bank_level_param)
                wait_until_altitude_reached(start_altitude_param)
-               set_heading_delta(0)
                time.sleep(settle_time)
                rst_msn_time()
 
