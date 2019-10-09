@@ -89,6 +89,12 @@ def set_planned_altitude(target_altitude: float):
 def get_current_altitude():
      return get_dref(DREF_INDICATOR_ALTI)
 
+def get_planned_altitude():
+     return get_dref(DREF_AP_SET_ALTI_IN_FEET)
+
+def get_planned_climbrate():
+     return get_dref(DREF_AP_SET_VV_IN_FPM2)
+
 def get_current_heading():
      return get_dref(DREF_INDICATOR_HEADING)
 
@@ -105,40 +111,61 @@ def get_dref(dref_name: str):
 
 
 ### CHECK STATE
+def reset_planned_altitude(target_altitude):
+     planned_altitude = get_planned_altitude()
+     if abs(planned_altitude - target_altitude) > 20.0:
+          set_planned_altitude(target_altitude)
 
-def wait_until_x_reached(function_to_load_actual_value, expected_value,tolerance,reset_time):
-     value_not_reached = True
-     while value_not_reached:
-          current_value = function_to_load_actual_value()
-          delta_value = expected_value - current_value
-          if abs(delta_value) < tolerance:
-               value_not_reached = False 
-          if reset_time:
-               rst_msn_time()
-          time.sleep(1)
+def correct_climb_direction(current_altitude, target_altitude):
+     climbrate = get_planned_climbrate()
+     false_direction = 0 > (target_altitude - current_altitude ) * climbrate
+     if false_direction:
+          set_planned_climbrate(climbrate * -1)
 
-def wait_until_heading_reached(expected_heading, reset_time=False):
-     wait_until_x_reached(get_current_heading, expected_heading, 2.0, reset_time)
-     
+def wait_until_heading_reached(expected_heading):
+     wait_until_reached(-1 , expected_heading)
 
+<<<<<<< HEAD
 def wait_until_altitude_reached(expected_altitude, reset_time=False):
      wait_until_x_reached(get_current_altitude, expected_altitude, 25.0,reset_time)
+=======
+def wait_until_altitude_reached(expected_altitude):
+     wait_until_reached(expected_altitude, -1)
+>>>>>>> a9053313a7f8b0ac0275ae03ff3980d6d1ce9609
 
 def wait_until_reached(target_altitude: float, target_banks: float):
+     check_altitude = target_altitude >= 0
+     dif_altitude = 0
+     check_heading = target_banks >= 0
+     dif_heading = 0
      while True:
+<<<<<<< HEAD
           cur_alt = get_current_altitude()
           cur_head = get_current_heading ()
           dif_altitude = abs(target_altitude - cur_alt)
           dif_heading = abs(target_banks - cur_head)
           if( dif_altitude < 25.0 and 
+=======
+          if check_altitude:
+               cur_alt = get_current_altitude()
+               dif_altitude = abs(target_altitude - cur_alt)
+               reset_planned_altitude(target_altitude)
+               correct_climb_direction(cur_alt, target_altitude)
+          if check_heading:
+               cur_head = get_current_heading ()
+               dif_heading = abs(target_banks - cur_head)
+          
+          if( dif_altitude < 20.0 and 
+>>>>>>> a9053313a7f8b0ac0275ae03ff3980d6d1ce9609
           dif_heading < 2.0):
                break
+          time.sleep(1.0)
 
 ### MANEUVER
 
-def set_bank_angle(level: int = 0):
+def set_bank_angle(level: float = 0.0):
      # 0=auto 1-6 for 5-30 bank degree in hdg mode
-     set_dref(DREF_AP_SET_HEADING_LEVEL, 6.0) 
+     set_dref(DREF_AP_SET_HEADING_LEVEL, level) 
 
 def set_heading_delta(delta: float):
      current_heading = get_current_heading()
@@ -151,6 +178,8 @@ def set_heading(heading: float):
 
 
 def climb_to(altitude_target:float, fpm:float):
+     if altitude_target <= 0:
+          return
      cur_alti = get_current_altitude()
      delta = altitude_target - cur_alti
 
@@ -164,16 +193,21 @@ def climb_to(altitude_target:float, fpm:float):
 
 def climb(altitude_delta:float, fpm:float):
      current_altitude = get_current_altitude()
+     if altitude_delta == 0:
+          return current_altitude
      altitude_target = current_altitude + altitude_delta
      climb_to(altitude_target, fpm)
      return altitude_target
 
-def fly_banks(heading_delta = 90.0, bank_mode = 6):
+def fly_banks(heading_delta = 90.0, bank_mode = 6.0):
      '''
      bank mode 1 - 6
      '''
      activate_mode_heading()
      set_bank_angle(bank_mode)
+     # let the direction settle
+     set_heading_delta(heading_delta/10)
+     time.sleep(1.0)
      return set_heading_delta(heading_delta)
 
 ### maneuver definition and execution
@@ -203,8 +237,8 @@ def define_flight_maneuvers(start_altitudes, climbs, climb_rates, heading_change
           return manuveuvers
 
 def sort_maneuvers(manuveuvers):
-     return sorted(manuveuvers, key=lambda k: (k['start_altitude'], 
-     k['climb_rate'],k['bank_angle'])) 
+     return sorted(manuveuvers, key=lambda k: (k['start_altitude'], k['climb_rate'],k['bank_angle'])) 
+ 
      
 def fly(maneuvers, settle_time=6.0):
      '''
@@ -212,18 +246,23 @@ def fly(maneuvers, settle_time=6.0):
      '''
      for maneuver in maneuvers:
           logger.info(maneuver)
+          start_altitude_param = maneuver["start_altitude"]
+          climb_rate_param = maneuver["climb_rate"]
+          climb_param = maneuver["climb"]
+          heading_change_param = maneuver["heading_change"]
+          bank_level_param =  maneuver["bank_angle"]
           activate_mode_ap()
           # reach start altitude and reset time
-          start_altitude = maneuver["start_altitude"]
-          if start_altitude > 0:
-               climb_to(start_altitude, maneuver["climb_rate"])
-               wait_until_altitude_reached(start_altitude)
+          if start_altitude_param > 0:
+               climb_to(start_altitude_param, climb_rate_param)
+               fly_banks(heading_change_param * -1, bank_level_param)
+               wait_until_altitude_reached(start_altitude_param)
                time.sleep(settle_time)
                rst_msn_time()
 
           # do maneuver
-          target_altitude = climb(maneuver["climb"], maneuver["climb_rate"])
-          target_banks = fly_banks(maneuver["heading_change"], maneuver["bank_angle"])
+          target_altitude = climb(climb_param, climb_rate_param)
+          target_banks = fly_banks(heading_change_param, bank_level_param)
           wait_until_reached(target_altitude, target_banks)
           time.sleep(settle_time)
           rst_msn_time()
