@@ -194,7 +194,7 @@ def fly_banks(heading_delta = 90.0, bank_mode = 6.0):
      set_bank_angle(bank_mode)
      # let the direction settle
      set_heading_delta(heading_delta/10)
-     time.sleep(2.0)
+     time.sleep(1.0)
      return set_heading_delta(heading_delta)
 
 ### maneuver definition and execution
@@ -241,8 +241,8 @@ def fly(maneuvers, settle_time=6.0):
           activate_mode_ap()
           # reach start altitude and reset time
           if start_altitude_param > 0:
-               climb_to(start_altitude_param, 600.0)
-               fly_banks(heading_change_param * -1, 4.0)
+               climb_to(start_altitude_param, climb_rate_param)
+               fly_banks(heading_change_param * -1, bank_level_param)
                wait_until_altitude_reached(start_altitude_param)
                set_heading_delta(0)
                time.sleep(settle_time)
