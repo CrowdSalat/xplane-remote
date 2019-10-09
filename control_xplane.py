@@ -125,13 +125,8 @@ def correct_climb_direction(current_altitude, target_altitude):
 def wait_until_heading_reached(expected_heading):
      wait_until_reached(-1 , expected_heading)
 
-<<<<<<< HEAD
-def wait_until_altitude_reached(expected_altitude, reset_time=False):
-     wait_until_x_reached(get_current_altitude, expected_altitude, 25.0,reset_time)
-=======
 def wait_until_altitude_reached(expected_altitude):
      wait_until_reached(expected_altitude, -1)
->>>>>>> a9053313a7f8b0ac0275ae03ff3980d6d1ce9609
 
 def wait_until_reached(target_altitude: float, target_banks: float):
      check_altitude = target_altitude >= 0
@@ -139,13 +134,6 @@ def wait_until_reached(target_altitude: float, target_banks: float):
      check_heading = target_banks >= 0
      dif_heading = 0
      while True:
-<<<<<<< HEAD
-          cur_alt = get_current_altitude()
-          cur_head = get_current_heading ()
-          dif_altitude = abs(target_altitude - cur_alt)
-          dif_heading = abs(target_banks - cur_head)
-          if( dif_altitude < 25.0 and 
-=======
           if check_altitude:
                cur_alt = get_current_altitude()
                dif_altitude = abs(target_altitude - cur_alt)
@@ -156,7 +144,6 @@ def wait_until_reached(target_altitude: float, target_banks: float):
                dif_heading = abs(target_banks - cur_head)
           
           if( dif_altitude < 20.0 and 
->>>>>>> a9053313a7f8b0ac0275ae03ff3980d6d1ce9609
           dif_heading < 2.0):
                break
           time.sleep(1.0)
