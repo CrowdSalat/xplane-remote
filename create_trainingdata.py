@@ -77,6 +77,20 @@ def trainings_set03():
 
     xp.fly(maneuvers)
 
+def trainings_set04():
+    '''
+    fly banks while climbing and falling
+    '''
+    logger.info('run trainings_set02')
+    altitudes = [1000, 2000, 3000, 4000, 5000]
+    climb = [-100]
+    climb_rates = [600, 500, 400]
+    heading_changes = [30.0, -30.0]
+    bank_modes = [3, 4]
+
+    maneuvers = xp.define_flight_maneuvers(altitudes, climb,climb_rates, heading_changes, bank_modes , sort=True)
+
+    xp.fly(maneuvers)
 
 def main():
     config_logger()
@@ -85,7 +99,8 @@ def main():
     #trainings_set00()
     #trainings_set01()
     #trainings_set02()
-    trainings_set03()
+    #trainings_set03()
+    trainings_set04()
 
     xp.close_xp_remote()
      
