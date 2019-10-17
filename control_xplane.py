@@ -18,6 +18,7 @@ DREF_MISSN_TIME = 'sim/time/total_flight_time_sec'                 # float	y	sec
 DREF_INDICATOR_ALTI = 'sim/cockpit2/gauges/indicators/altitude_ft_pilot' #float	n	feet	Indicated height, MSL, in feet, primary system, based on pilots barometric pressure input.
 DREF_INDICATOR_HEADING = 'sim/cockpit2/gauges/indicators/compass_heading_deg_mag'	     #float	n	degrees_magnetic	Indicated heading of the wet compass, in degrees.
 
+DREF_THROTTLE = 'sim/cockpit2/engine/actuators/throttle_ratio_all'
 
 DREF_AP_ACTIVATE = 'sim/cockpit/autopilot/autopilot_mode'          # 2.0 is on
 
@@ -86,6 +87,9 @@ def set_planned_climbrate(fpm: float):
 def set_planned_altitude(target_altitude: float):
      set_dref(DREF_AP_SET_ALTI_IN_FEET,target_altitude)
 
+def set_throttle(throttle :float):
+     return set_dref(DREF_THROTTLE, throttle)
+
 def get_current_altitude():
      return get_dref(DREF_INDICATOR_ALTI)
 
@@ -97,6 +101,8 @@ def get_planned_climbrate():
 
 def get_current_heading():
      return get_dref(DREF_INDICATOR_HEADING)
+
+
 
 ### DREF SET/GET
 def set_dref(dref_name, target_value, index= 0):
@@ -194,7 +200,7 @@ def fly_banks(heading_delta = 90.0, bank_mode = 6.0):
      set_bank_angle(bank_mode)
      # let the direction settle
      set_heading_delta(heading_delta/10)
-     time.sleep(1.0)
+     time.sleep(2.0)
      return set_heading_delta(heading_delta)
 
 ### maneuver definition and execution
@@ -242,9 +248,7 @@ def fly(maneuvers, settle_time=6.0):
           # reach start altitude and reset time
           if start_altitude_param > 0:
                climb_to(start_altitude_param, climb_rate_param)
-               fly_banks(heading_change_param * -1, bank_level_param)
                wait_until_altitude_reached(start_altitude_param)
-               time.sleep(settle_time)
                rst_msn_time()
 
           # do maneuver
