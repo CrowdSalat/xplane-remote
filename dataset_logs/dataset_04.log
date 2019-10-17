@@ -1,6 +1,6 @@
 2019-10-09 07:55:55,192 - xplane-remote#init_xp_remote - DEBUG - Start Server.
 2019-10-09 07:55:55,204 - xplane-remote#init_xp_remote - DEBUG - Server started.
-2019-10-09 07:55:55,206 - xplane-remote#trainings_set04 - INFO - run trainings_set02
+2019-10-09 07:55:55,206 - xplane-remote#trainings_set04 - INFO - run trainings_set04
 2019-10-09 07:55:55,208 - xplane-remote#fly - INFO - {'start_altitude': 1000, 'climb': -100, 'climb_rate': 400, 'heading_change': 30.0, 'bank_angle': 3}
 2019-10-09 07:56:48,301 - xplane-remote#fly - INFO - {'start_altitude': 1000, 'climb': -100, 'climb_rate': 400, 'heading_change': -30.0, 'bank_angle': 3}
 2019-10-09 07:58:30,400 - xplane-remote#fly - INFO - {'start_altitude': 1000, 'climb': -100, 'climb_rate': 400, 'heading_change': 30.0, 'bank_angle': 4}
