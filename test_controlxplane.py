@@ -70,6 +70,9 @@ class Test_Xplane_Remote(unittest.TestCase):
         xpr.wait_until_altitude_reached(altitude)
         xpr.set_heading_delta(0)
 
+    def test_set_throttle(self):
+        xpr.set_throttle(1.0)
+
     # maneuver definition
     def test_maneuver_def(self):
         start_altitude = 1000
